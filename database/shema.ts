@@ -21,7 +21,6 @@ export const posts = sqliteTable('posts', {
     editedAt: integer('edited_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
     
     authorId: integer('author_id')
-        .notNull()
         .references(() => post_author.id), 
 });
 

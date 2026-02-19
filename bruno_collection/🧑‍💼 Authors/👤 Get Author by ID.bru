@@ -1,0 +1,86 @@
+meta {
+  name: 👤 Get Author by ID
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}{{endPointApi}}/authors/{{author_id_demo}}
+  auth: inherit
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Response success is true", function() {
+    const body = res.getBody();
+    expect(body.success).to.be.true;
+  });
+
+  test("Author structure is valid", function() {
+    const body = res.getBody();
+    expect(body.data).to.have.property('id');
+    expect(body.data).to.have.property('name');
+    expect(body.data).to.have.property('describ');
+  });
+
+  test("Author not found returns 404", function() {
+    if (res.getStatus() === 404) {
+      const body = res.getBody();
+      expect(body.success).to.be.false;
+    }
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Get Author by ID
+  
+  **Description:**
+  Retrieves a specific author by their ID.
+  
+  ---
+  
+  ### Request
+  
+  **Method:** `GET`
+  **URL:** `{{base_url}}{{endPointApi}}/authors/{{author_id_demo}}`
+  
+  **URL Parameters:**
+  - `id` - Author ID (required, must be an integer)
+  
+  **Authentication:** Optional (both authenticated and unauthenticated users can access)
+  
+  ---
+  
+  ### Response (200)
+  
+  ```json
+  {
+    "success": true,
+    "message": "Success",
+    "data": {
+      "id": 1,
+      "name": "John Doe",
+      "describ": "Senior developer with 10 years of experience"
+    },
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+  
+  ### Response (404)
+  
+  ```json
+  {
+    "success": false,
+    "message": "Author not found",
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+}

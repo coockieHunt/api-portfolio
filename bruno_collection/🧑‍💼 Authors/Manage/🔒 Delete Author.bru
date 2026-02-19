@@ -1,0 +1,83 @@
+meta {
+  name: 🔒 Delete Author
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}{{endPointApi}}/authors/2
+  body: none
+  auth: inherit
+}
+
+tests {
+  const status = res.getStatus();
+  
+  test("Status code is 200 on successful deletion", function() {
+    expect(status).to.equal(200);
+  });
+  
+  if (status === 200) {
+    test("Response success is true", function() {
+      const body = res.getBody();
+      expect(body.success).to.be.true;
+      expect(body.message).to.include("deleted successfully");
+    });
+  }
+  
+  test("Author not found returns 404", function() {
+    if (status === 404) {
+      const body = res.getBody();
+      expect(body.success).to.be.false;
+      expect(body.message).to.include("not found");
+    }
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Delete Author
+  
+  **Description:**
+  Deletes an author by ID. Requires authentication.
+  
+  ---
+  
+  ### Request
+  
+  **Method:** `DELETE`
+  **URL:** `{{base_url}}{{endPointApi}}/authors/{{author_id_demo}}`
+  
+  **URL Parameters:**
+  - `id` - Author ID (required, must be an integer)
+  
+  **Authentication:**
+  - Required: bearer token
+  
+  ---
+  
+  ### Response (200)
+  
+  ```json
+  {
+    "success": true,
+    "message": "Author deleted successfully",
+    "data": {},
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+  
+  ### Response (404)
+  
+  ```json
+  {
+    "success": false,
+    "message": "Author not found",
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+}

@@ -1,0 +1,122 @@
+meta {
+  name: 🔒 Edit Author
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{base_url}}{{endPointApi}}/authors/2
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Updated Author Name",
+    "describ": "Updated author description with new information"
+  }
+}
+
+tests {
+  const status = res.getStatus();
+  
+  test("Status code is 200 on valid update", function() {
+    expect(status).to.equal(200);
+  });
+  
+  if (status === 200) {
+    test("Response success is true", function() {
+      const body = res.getBody();
+      expect(body.success).to.be.true;
+      expect(body.message).to.include("updated successfully");
+    });
+  
+    test("Updated author structure is valid", function() {
+      const body = res.getBody();
+      expect(body.data).to.exist;
+      expect(body.data).to.have.property('id');
+      expect(body.data).to.have.property('name');
+      expect(body.data).to.have.property('describ');
+    });
+  
+    test("Author name was updated", function() {
+      const body = res.getBody();
+      expect(body.data.name).to.equal("Updated Author Name");
+    });
+  
+    test("Author description was updated", function() {
+      const body = res.getBody();
+      expect(body.data.describ).to.equal("Updated author description with new information");
+    });
+  }
+  
+  if (status === 404) {
+    test("Error message is correct for 404", function() {
+      const body = res.getBody();
+      expect(body.message).to.include("not found");
+    });
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Edit Author
+  
+  **Description:**
+  Updates an author by ID. Requires authentication.
+  
+  ---
+  
+  ### Request
+  
+  **Method:** `PUT`
+  **URL:** `{{base_url}}{{endPointApi}}/authors/{{author_id_demo}}`
+  
+  **Authentication:**
+  - Required: bearer token
+  
+  **Body Parameters (partial allowed):**
+  - `name` - Author name (must be unique if provided)
+  - `describ` - Author description
+  
+  ---
+  
+  ### Response (200)
+  
+  ```json
+  {
+    "success": true,
+    "message": "Author updated successfully",
+    "data": {
+      "id": 1,
+      "name": "Updated Author Name",
+      "describ": "Updated author description with new information"
+    },
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+  
+  ### Response (404)
+  
+  ```json
+  {
+    "success": false,
+    "message": "Author not found",
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+  
+  ### Response (409)
+  
+  ```json
+  {
+    "success": false,
+    "message": "Author name already exists",
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+}

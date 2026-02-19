@@ -233,11 +233,13 @@ export class BlogService {
      * @param data - Post data including title, content, summary, author ID, optional tags, and optional featuredImage
      * @returns Promise with the newly created post
      */
-    static async createPost(data: { title: string; slug?: string; content: string; summary?: string, authorId: number; tagIds?: number[]; featuredImage?: string; indexed?: number; published?: number; }) {
+    static async createPost(data: { title: string; slug?: string; content: string; summary?: string, authorId?: number | null; tagIds?: number[]; featuredImage?: string; indexed?: number; published?: number; }) {
         const slug = data.slug || data.title.toLowerCase().replace(/ /g, '-');
         const { tagIds, ...postData } = data;
 
-        await BlogHelper.validateAuthor(postData.authorId);
+        if (postData.authorId !== undefined && postData.authorId !== null) {
+            await BlogHelper.validateAuthor(postData.authorId);
+        }
         await BlogHelper.validateTags(tagIds || []);
 
         const existingSlug = await db
@@ -250,7 +252,10 @@ export class BlogService {
             throw new ValidationError(`Post with slug "${slug}" already exists`);
         }
         
-        const newPost = await db.insert(posts).values({ ...postData, slug, indexed: data.indexed ?? 0, published: data.published ?? 0 }).returning().get();
+        const newPost = await db.insert(posts)
+            .values({ ...postData, authorId: postData.authorId ?? null, slug, indexed: data.indexed ?? 0, published: data.published ?? 0 })
+            .returning()
+            .get();
         
         if (!newPost) {
             throw new ValidationError('Failed to create post in database');
@@ -279,11 +284,11 @@ export class BlogService {
      * @param updateData - Partial post data to update, including optional tags and optional featuredImage
      * @returns Promise with updated post or null if not found
      */
-    static async updatePostBySlug(slug: string, updateData: { title?: string; content?: string; summary?: string; editedAt?: Date; authorId?: number; tagIds?: number[]; featuredImage?: string; indexed?: number; published?: number; slug?: string; }) {
+    static async updatePostBySlug(slug: string, updateData: { title?: string; content?: string; summary?: string; editedAt?: Date; authorId?: number | null; tagIds?: number[]; featuredImage?: string; indexed?: number; published?: number; slug?: string; }) {
         const key = BlogHelper.getCacheKey(slug);
         validateKey(key);
 
-        if (updateData.authorId) {
+        if (updateData.authorId !== undefined && updateData.authorId !== null) {
             await BlogHelper.validateAuthor(updateData.authorId);
         }
 
@@ -309,13 +314,15 @@ export class BlogService {
         }
         
         try {
-            const author = await db.select({
-                name: post_author.name,
-                describ: post_author.describ
-            })
-            .from(post_author)
-            .where(eq(post_author.id, updatedPost.authorId))
-            .get();
+            const author = updatedPost.authorId !== null && updatedPost.authorId !== undefined
+                ? await db.select({
+                    name: post_author.name,
+                    describ: post_author.describ
+                })
+                .from(post_author)
+                .where(eq(post_author.id, updatedPost.authorId))
+                .get()
+                : null;
 
             const tagsResults = await db.select({ tag: tags })
                 .from(postTags)

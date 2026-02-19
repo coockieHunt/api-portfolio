@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b548466e-b33a-46d1-a6ff-2e5abdabc01a",
+  "id": "6c71e139-4dbe-4b71-995c-7620c3410052",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "post_tags": {
@@ -181,7 +181,7 @@
           "name": "author_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         }
       },

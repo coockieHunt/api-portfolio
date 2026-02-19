@@ -1,0 +1,104 @@
+meta {
+  name: 🔒 Create Author
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}{{endPointApi}}/authors
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "New Author Name",
+    "describ": "A brief description of the author and their expertise"
+  }
+}
+
+tests {
+  test("Status code is 201", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Response success is true", function() {
+    const body = res.getBody();
+    expect(body.success).to.be.true;
+    expect(body.message).to.include("created successfully");
+  });
+  
+  test("Created author structure is valid", function() {
+    const body = res.getBody();
+    expect(body.data).to.exist;
+    expect(body.data).to.have.property('id');
+    expect(body.data).to.have.property('name');
+    expect(body.data).to.have.property('describ');
+  });
+  
+  test("Author name matches request", function() {
+    const body = res.getBody();
+    expect(body.data.name).to.equal("New Author Name");
+  });
+  
+  test("Duplicate name returns 409", function() {
+    if (res.getStatus() === 409) {
+      const body = res.getBody();
+      expect(body.success).to.be.false;
+      expect(body.message).to.include("already exists");
+    }
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Create Author
+  
+  **Description:**
+  Creates a new author. Requires authentication.
+  
+  ---
+  
+  ### Request
+  
+  **Method:** `POST`
+  **URL:** `{{base_url}}{{endPointApi}}/authors`
+  
+  **Authentication:**
+  - Required: bearer token
+  
+  **Body Parameters:**
+  - `name` - Author name (required, must be unique)
+  - `describ` - Author description (required)
+  
+  ---
+  
+  ### Response (201)
+  
+  ```json
+  {
+    "success": true,
+    "message": "Author created successfully",
+    "data": {
+      "id": 3,
+      "name": "New Author Name",
+      "describ": "A brief description of the author and their expertise"
+    },
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+  
+  ### Response (409)
+  
+  ```json
+  {
+    "success": false,
+    "message": "Author name already exists",
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+}
