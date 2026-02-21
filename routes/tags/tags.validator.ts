@@ -9,6 +9,18 @@ export const TagsValidator = {
 	delete: [
 		param('slug').isString().notEmpty(),
 	],
+
+	update: [
+		param('slug').isString().notEmpty(),
+		body('name').optional().isString().notEmpty().trim(),
+		body('color').optional().isString().trim(),
+		body().custom((value) => {
+			if (!value || (!value.name && !value.color)) {
+				throw new Error('At least one field (name or color) must be provided');
+			}
+			return true;
+		}),
+	],
 	
 	create: [
 		body('name').isString().notEmpty().trim(),

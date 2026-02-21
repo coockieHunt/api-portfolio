@@ -64,6 +64,21 @@ class TagsController {
 		writeToLog(`Created new tag: ${slug}`, 'tags');
 		return res.success(newTag, 'Tag created successfully.');
 	}
+
+	/**
+	 * PUT /:slug - Update tag by slug
+	 * Updates tag properties by its slug.
+	 * @param req Express Request object
+	 * @param res Express Response object
+	 */
+	async update(req: Request<{ slug: string }>, res: Response) {
+		const { slug } = req.params;
+		const { name, color } = req.body;
+		const updatedTag = await TagService.updateTagBySlug(slug, { name, color });
+		logConsole('TagRouter', `PUT /${slug}`, 'OK', `Updated tag with slug: ${slug}.`);
+		writeToLog(`Updated tag with slug: ${slug}.`, 'tags');
+		return res.success(updatedTag, 'Tag updated successfully.');
+	}
 }
 
 export default new TagsController();

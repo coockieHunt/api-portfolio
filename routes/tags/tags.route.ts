@@ -70,4 +70,19 @@ TagsRoute.post('/',
 	responseHandler
 );
 
+/**
+ * PUT /:slug - Update tag by slug
+ * Updates a tag by its slug.
+ * @param req Express Request object
+ * @param res Express Response object
+ */
+TagsRoute.put('/:slug',
+	rateLimiter,
+	authenticateToken,
+	TagsValidator.update,
+	validateRequest,
+	asyncHandler(TagsController.update),
+	responseHandler
+);
+
 export default TagsRoute;
