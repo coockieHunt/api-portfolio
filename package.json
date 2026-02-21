@@ -9,7 +9,8 @@
   "scripts": {
     "start": "tsx app.ts",
     "dev": "NODE_ENV=development nodemon --exec tsx app.ts",
-    "hash": "node ./scripts/generateHash.js"
+    "hash": "node ./scripts/generateHash.js",
+    "build": "tsup app.ts --format esm --outDir dist"
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",
@@ -50,6 +51,8 @@
     "@types/nodemailer": "^7.0.5",
     "@types/react": "^19.2.8",
     "drizzle-kit": "^0.31.8",
-    "tsx": "^4.21.0"
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }

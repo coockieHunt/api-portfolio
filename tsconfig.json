@@ -1,30 +1,21 @@
 {
   "compilerOptions": {
-    /* 1. Configuration Moderne & Sans Extensions */
-    "target": "ES2022",             /* Node 18+ supporte ES2022 (top-level await, classes privées) */
-    "module": "ESNext",             /* Utilise la syntaxe standard des modules */
-    "moduleResolution": "bundler",  /* LA CLÉ : Permet d'importer sans mettre .js ou .ts */
-    
-    /* 2. Environnement */
-    "lib": ["ESNext", "DOM", "DOM.Iterable"], /* "DOM" requis pour @vercel/og et React */
-    "types": ["node"],              /* Inclus les types Node globaux */
-
-    /* 3. React */
-    "jsx": "react-jsx",             /* Support moderne React 19 */
-
-    /* 4. Interopérabilité (Pour que Express/Winston/Multer fonctionnent bien) */
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,      /* Permet d'importer des fichiers .json (pour 'config') */
-
-    /* 5. Best Practices TypeScript 5+ */
-    "strict": true,                 /* Active toutes les vérifications strictes */
-    "verbatimModuleSyntax": true,   /* Optimisation moderne des imports pour esbuild/tsx */
-    "skipLibCheck": true,           /* Ignore les erreurs dans les node_modules */
+    "resolveJsonModule": true,
+    "strict": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-
-    /* 6. Build */
-    "noEmit": true                  /* IMPORTANT : On laisse 'tsx' gérer l'exécution, tsc ne fait que vérifier les erreurs */
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": "./"
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js"],
   "exclude": ["node_modules", "dist"]

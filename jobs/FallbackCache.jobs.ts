@@ -6,6 +6,8 @@ import { BlogService } from '../services/blog/Blog.service';
 import { ProjectsService } from '../services/projects/Projects.service';
 import { TagService } from '../services/tag/Tag.service';
 import { logConsole, writeToLog } from '../middlewares/log.middlewar';
+import chalk from 'chalk';
+import consola from 'consola';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,22 +20,8 @@ const OUTPUT_LATEST_BASENAME = 'worker_cache.json';
 const LOG_FILE = join(OUTPUT_DIR, 'backup-log.json');
 const LOG_MAX_ENTRIES = 100;
 
-const formatDate = (date: Date): string => {
-    return date.toLocaleString('fr-FR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-    });
-};
-
-const log = {
-    info: (msg: string) => console.log(`\x1b[32m[${formatDate(new Date())}]\x1b[0m ${msg}`),
-    warn: (msg: string) => console.warn(`\x1b[33m[${formatDate(new Date())}]\x1b[0m ${msg}`),
-    error: (msg: string, error?: unknown) => console.error(`\x1b[31m[${formatDate(new Date())}] ${msg}\x1b[0m`, error ?? ''),
-};
+// Suppression de la fonction `formatDate` et de l'objet `log` personnalisés, 
+// Consola gère le formatage et les timestamps nativement beaucoup mieux.
 
 const buildTimestamp = () => new Date().toISOString().replace(/[:.]/g, '-');
 
@@ -107,7 +95,8 @@ const appendBackupLog = async (filePath: string, buildDurationMs: number) => {
 
         await writeFile(LOG_FILE, JSON.stringify(existing, null, 2), 'utf8');
     } catch (error) {
-        log.error('Failed to write backup log', error);
+        // Remplacement par consola.error
+        consola.error(chalk.red('Failed to write backup log:'), error);
     }
 };
 
@@ -115,7 +104,7 @@ const runCacheBackup = async () => {
     const startedAt = Date.now();
 
     try {
-        log.info('Building fallback cache...');
+        consola.start(chalk.cyan('Building fallback cache data...'));
         
         const cacheData = await buildCacheData();
         const filePath = await saveCacheToFile(cacheData);
@@ -123,7 +112,7 @@ const runCacheBackup = async () => {
         
         await appendBackupLog(filePath, buildDurationMs);
 
-        log.info(`Cache saved to ${filePath} (${buildDurationMs}ms)`);
+        consola.success(`Cache saved to ${chalk.magentaBright(filePath)} ${chalk.dim(`(${buildDurationMs}ms)`)}`);
         
         logConsole('JOB', 'FallbackCache', 'INFO', 'Fallback cache built', {
             posts: cacheData.blog.posts.length,
@@ -137,31 +126,51 @@ const runCacheBackup = async () => {
             'worker'
         );
     } catch (error) {
-        log.error('Failed to build fallback cache', error);
+        consola.error(chalk.bgRed.white.bold(' Failed to build fallback cache '), error);
         logConsole('JOB', 'FallbackCache', 'FAIL', 'Failed to build fallback cache', { error });
         writeToLog('Fallback cache build failed', 'worker');
+        
+        // IMPORTANT : On relance l'erreur pour que startFallbackCacheJob sache que ça a planté
+        throw error; 
     }
 };
 
 export const startFallbackCacheJob = async () => {
     const CRON_SCHEDULE = process.env.FALLBACK_CACHE_CRON || '0 * * * *';
 
-    log.info('Starting Fallback Cache Job...');
-    log.info(`CRON_SCHEDULE: ${CRON_SCHEDULE}`);
-    log.info(`OUTPUT_DIR: ${OUTPUT_DIR}`);
-
-    try {
-        await runCacheBackup();
-        log.info('Initial fallback cache generated successfully');
-    } catch (error) {
-        log.error('Initial cache backup failed', error);
-    }
-
-    cron.schedule(CRON_SCHEDULE, () => {
-        runCacheBackup().catch((error) => {
-            log.error('Fallback cache job failed on scheduled run', error);
-        });
+    consola.box({
+        title: chalk.bold.cyanBright(' 🛡️  Fallback Cache Job '),
+        message: `${chalk.greenBright('• CRON:')}   ${chalk.cyan(CRON_SCHEDULE)}\n` +
+                 `${chalk.greenBright('• Output:')} ${chalk.magentaBright(OUTPUT_DIR)}\n` +
+                 `${chalk.greenBright('• File:')}   ${chalk.yellowBright(OUTPUT_LATEST_BASENAME)}`,
+        style: {
+            padding: 1,
+            borderColor: 'cyan',
+            borderStyle: 'round',
+        },
     });
-
-    log.info(`Fallback Cache Job scheduled — ${CRON_SCHEDULE} ⏰`);
+    
+    try {
+        consola.start(chalk.italic('Starting initial fallback cache generation...'));
+        await runCacheBackup();
+        consola.success(chalk.green('Initial fallback cache generated successfully! ✨'));
+    } catch (error) {
+        consola.error(chalk.bgRed.white.bold(' Initial cache backup failed ❌ '), error);
+    }
+    
+    cron.schedule(CRON_SCHEDULE, async () => {
+        consola.info(chalk.dim(`[Cron] Running scheduled cache backup...`));
+        
+        try {
+            await runCacheBackup();
+            consola.success(chalk.green.dim('[Cron] Cache backup completed successfully.'));
+        } catch (error) {
+            consola.error(chalk.red.bold('[Cron] Fallback cache job failed on scheduled run ❌'), error);
+        }
+    });
+    
+    consola.ready({
+        message: `Fallback Cache Job active — Next run at ${chalk.cyan.bold(CRON_SCHEDULE)} ⏰`,
+        badge: true
+    });
 };

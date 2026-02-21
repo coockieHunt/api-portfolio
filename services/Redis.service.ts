@@ -7,7 +7,7 @@ import { logConsole, writeToLog } from '../middlewares/log.middlewar';
 //helpers
 import { validateKey } from '../utils/redis.helper';
 
-export let RedisClient: RedisClientType | null = null;
+export let RedisClient: RedisClientType;
 
 
 export class RedisService {

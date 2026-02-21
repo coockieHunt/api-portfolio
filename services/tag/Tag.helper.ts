@@ -22,9 +22,10 @@ export class TagHelper {
      * @returns Tag object or null if not found
      */
     static async findTagBySlug(slug: string): Promise<TagResult | null> {
-        return db.query.tags.findFirst({
+        const tag = await db.query.tags.findFirst({
             where: (tags, { eq }) => eq(tags.slug, slug),
         });
+        return tag ?? null;
     }
 
     /**
