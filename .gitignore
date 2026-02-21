@@ -78,4 +78,6 @@ pids
 # --- PROJECT SPECIFIC ---
 assets/
 default.json
+fallback-dev
+fallback-cache/
 

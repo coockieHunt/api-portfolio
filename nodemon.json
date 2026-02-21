@@ -1,0 +1,20 @@
+{
+  "watch": [
+    "**/*.ts",
+    "package.json",
+    "tsconfig.json",
+    ".env"
+  ],
+  "ignore": [
+    "node_modules/**",
+    "logs/**",
+    "*.log",
+    "data/**",
+    "assets/**",
+    "../portfolio_reworks/**",
+    "fallback-cache/**",
+    "fallback-dev/**",
+    "*.db"
+  ],
+  "exec": "tsx app.ts"
+}

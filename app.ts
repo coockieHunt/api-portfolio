@@ -33,11 +33,12 @@ import AssetsRoute from './routes/assets/assets.route';
 import RouteMap from './routes/sitemap/sitemap.route';
 import GatusRoute from './routes/gatus/gatus.route';
 import ProjectRoute from './routes/projects/projects.route';
-import WorkerRoute from './routes/worker/worker.route';
 import AuthorsRoute from './routes/authors/authors.route';
 
 import OpenGraphRouter from './routes/proxy/ogImage.route';
 import AssetsProxyRoute from './routes/proxy/assetsProxy.route';
+
+import { startFallbackCacheJob } from './jobs/FallbackCache.jobs';
 
 const API_ROOT = cfg.ApiRoot ;
 const ASSET_ROOT = cfg.AssetRoot ;
@@ -121,7 +122,6 @@ app.use(`${API_ROOT}/authors`, allowOnlyFromIPs, AuthorsRoute);
 app.use(`${API_ROOT}/assets`, allowOnlyFromIPs, AssetsRoute);
 app.use(`${API_ROOT}/projects`, allowOnlyFromIPs, ProjectRoute);
 app.use(`${API_ROOT}/gatus`, GatusRoute);
-app.use(`${API_ROOT}/worker`, WorkerRoute);
 app.use(`${API_ROOT}/`, RouteMap);
 
 
@@ -172,6 +172,10 @@ async function startServer() {
 
         await SendmailService.verifySmtpConnection();
         consola.success('SMTP Ready', chalk.dim(`(${process.env.MAIL_HOST})`));
+
+        // Start Fallback Cache Job
+        await startFallbackCacheJob();
+        consola.success('Fallback Cache Job Started', chalk.dim(`(${process.env.FALLBACK_CACHE_CRON || '0 * * * *'})`));
 
         app.listen(Number(PORT), '0.0.0.0', () => {
             consola.box({
