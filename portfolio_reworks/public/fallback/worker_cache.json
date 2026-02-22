@@ -1,0 +1,198 @@
+{
+  "blog": {
+    "meta": {
+      "total_count": 4,
+      "page": 1,
+      "limit": 5,
+      "total_pages": 1
+    },
+    "posts": [
+      {
+        "post": {
+          "id": 63,
+          "title": "Kitchen Sink :  Éléments Visuels",
+          "slug": "kitchen-sink-elments-visuels",
+          "content": "l'article qui permet de voir si tout et ok",
+          "summary": "l'article qui permet de voir si tout et ok",
+          "published": 1,
+          "indexed": 1,
+          "createdAt": "2026-02-16T23:24:34.000Z",
+          "editedAt": "2026-02-21T03:06:52.000Z",
+          "authorId": 1
+        },
+        "author": {
+          "name": "xq"
+        },
+        "tags": [
+          {
+            "id": 3,
+            "name": "APIs",
+            "slug": "api",
+            "color": "#F54956"
+          }
+        ]
+      },
+      {
+        "post": {
+          "id": 64,
+          "title": "test",
+          "slug": "test",
+          "content": "article test de projet",
+          "summary": "article test de projet",
+          "published": 1,
+          "indexed": 1,
+          "createdAt": "2026-02-16T23:24:34.000Z",
+          "editedAt": "2026-02-21T02:10:05.000Z",
+          "authorId": null
+        },
+        "author": null,
+        "tags": []
+      },
+      {
+        "post": {
+          "id": 72,
+          "title": "test deux",
+          "slug": "test-deux",
+          "content": "Une communauté de développeurs vient de dévoiler Null++, un langage de programmation révolutionnaire conçu pour ne produire absolument aucune sortie. Avec une latence de 0 milliseconde et une empreinte mémoire inexistante, les créateurs affirment que c'est le langage le plus \"vert\" et le plus performant jamais créé. « Nous avons supprimé la syntaxe, les variables et la logique pour nous concentrer sur la vitesse pure », explique le créateur. Les entreprises se l'arrachent déjà pour des projets qui n'ont besoin d'aucun résultat.",
+          "summary": "Une communauté de développeurs vient de dévoiler Null++, un langage de programmation révolutionnaire conçu pour ne produire absolument aucune sortie. Avec une latence de 0 milliseconde et une empreinte mémoire inexistante, les créateurs affirment que c'est le langage le plus \"vert\" et le plus performant jamais créé. « Nous avons supprimé la syntaxe, les variables et la logique pour nous concentrer sur la vitesse pure », explique le créateur. Les entreprises se l'arrachent déjà pour des projets qui n'ont besoin d'aucun résultat.",
+          "published": 1,
+          "indexed": 1,
+          "createdAt": "2026-02-16T23:24:34.000Z",
+          "editedAt": "2026-02-20T18:38:32.000Z",
+          "authorId": null
+        },
+        "author": null,
+        "tags": [
+          {
+            "id": 34,
+            "name": "système",
+            "slug": "systeme",
+            "color": "#33a40a"
+          }
+        ]
+      },
+      {
+        "post": {
+          "id": 156,
+          "title": "Bienvenue sur mon blog ! (Oui, un de plus sur Internet)",
+          "slug": "bienvenue-sur-mon-blog-oui-un-de-plus-sur-internet",
+          "content": "Premier article, premières confessions : pourquoi ce blog existe, ce que vous y trouverez, et surtout pourquoi écrire sur son code est 10x plus difficile que de le coder. Spoiler : l'article sur mon infrastructure hand-crafted est toujours en rédaction pendant que le site tourne déjà. Priorités de développeur de caverne. ☕",
+          "summary": "Premier article, premières confessions : pourquoi ce blog existe, ce que vous y trouverez, et surtout pourquoi écrire sur son code est 10x plus difficile que de le coder. Spoiler : l'article sur mon infrastructure hand-crafted est toujours en rédaction pendant que le site tourne déjà. Priorités de développeur de caverne. ☕",
+          "published": 1,
+          "indexed": 1,
+          "createdAt": "2026-02-16T23:24:34.000Z",
+          "editedAt": "2026-02-21T16:53:34.000Z",
+          "authorId": null
+        },
+        "author": null,
+        "tags": []
+      }
+    ]
+  },
+  "projects": [
+    {
+      "id": 4,
+      "title": "Lecteur BMP Arduino ST7789",
+      "tabName": "arduino_ST7789",
+      "description": "Affichage d'images BMP depuis une carte SD sur un écran ST7789",
+      "content": "Un projet embarqué conçu pour lire des fichiers images au format BMP stockés sur une carte SD et les afficher sur un écran TFT ST7789. Ce code gère l'interface SPI et le traitement des données binaires d'image sur microcontrôleur.",
+      "stack": [
+        "arduino",
+        "c++",
+        "embedded",
+        "spi"
+      ],
+      "UrlGithub": "https://github.com/coockieHunt/arduino_st7789_readSdBmp",
+      "UrlProject": null,
+      "published": 1
+    },
+    {
+      "id": 3,
+      "title": "Framework mods de jeux",
+      "tabName": "rp_engine_onset",
+      "description": "Un projet passionnant axé sur le développement de mods de jeux",
+      "content": "Un projet passionnant axé sur le développement de mods de jeux, créé à l'aide de technologies telles que Unity, Lua, HTML et JS. Ce framework a pour but de poser les bases, permettant des expériences de jeu amusantes et interactives.",
+      "stack": [
+        "unity",
+        "lua",
+        "html",
+        "js",
+        "mysql"
+      ],
+      "UrlGithub": "https://github.com/coockieHunt/ck_rp",
+      "UrlProject": null,
+      "published": 1
+    },
+    {
+      "id": 2,
+      "title": "Premier Portfolio",
+      "tabName": "first_portfolio",
+      "description": "Premier portfolio en ligne, beaucoup plus simple à l'époque la première itération de la version actuelle",
+      "content": "Mon premier portfolio en ligne, développé avec HTML, CSS et JavaScript, marque le début de mon parcours en développement web. Il met en avant mes compétences et projets passés, reflétant mes premières réalisations dans ce domaine.",
+      "stack": [
+        "html",
+        "css",
+        "javascript",
+        "react"
+      ],
+      "UrlGithub": "https://github.com/coockieHunt/portfolio",
+      "UrlProject": null,
+      "published": 1
+    },
+    {
+      "id": 1,
+      "title": "Quote Send",
+      "tabName": "nota_bene",
+      "description": "Un projet d'affichage de citations avec interface d'administration",
+      "content": "Quote Send est un projet personnel qui affiche des citations de manière élégante. Il dispose d'un menu d'administration sécurisé avec supabase pour gérer les citations. Ce projet reflète mon aspiration pour les textes inspirants, en offrant une plateforme simple mais efficace pour les partager.",
+      "stack": [
+        "react",
+        "supabase"
+      ],
+      "UrlGithub": "https://github.com/coockieHunt/quoteViewerSkull",
+      "UrlProject": "https://quote.jonathangleyze.fr",
+      "published": 1
+    }
+  ],
+  "tags": [
+    {
+      "id": 3,
+      "name": "APIs",
+      "slug": "api",
+      "color": "#F54956",
+      "postIds": [
+        63
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Technologie",
+      "slug": "thecno",
+      "color": "#0006ad",
+      "postIds": []
+    },
+    {
+      "id": 33,
+      "name": "Autre",
+      "slug": "other",
+      "color": "#2a2966",
+      "postIds": []
+    },
+    {
+      "id": 34,
+      "name": "système",
+      "slug": "systeme",
+      "color": "#33a40a",
+      "postIds": [
+        72
+      ]
+    },
+    {
+      "id": 35,
+      "name": "d",
+      "slug": "d",
+      "color": "#ffd500",
+      "postIds": []
+    }
+  ]
+}

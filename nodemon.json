@@ -1,20 +1,10 @@
 {
-  "watch": [
-    "**/*.ts",
-    "package.json",
-    "tsconfig.json",
-    ".env"
-  ],
+  "watch": ["**/*.ts", "package.json", "tsconfig.json", ".env"],
   "ignore": [
-    "node_modules/**",
-    "logs/**",
-    "*.log",
-    "data/**",
-    "assets/**",
-    "../portfolio_reworks/**",
-    "fallback-cache/**",
-    "fallback-dev/**",
-    "*.db"
+    "node_modules/**", "logs/**", "*.log",
+    "data/**", "assets/**", "../portfolio_reworks/**",
+    "fallback-cache/**", "fallback-dev/**", "*.db"
   ],
-  "exec": "tsx app.ts"
+  "exec": "tsx app.ts",
+  "exitcrash": true
 }

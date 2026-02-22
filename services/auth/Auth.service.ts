@@ -1,5 +1,5 @@
-import { RedisClient } from '../../services/Redis.service';
-import { AuthHelper } from './Auth.helper';
+import { RedisClient } from '../../services/Redis.service.ts';
+import { AuthHelper } from './Auth.helper.ts';
 
 
 export class AuthService {

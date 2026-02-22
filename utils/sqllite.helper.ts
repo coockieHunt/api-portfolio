@@ -8,7 +8,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 
 // shema
-import * as schema from '../database/shema.js';
+import * as schema from '../database/shema.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,4 +51,10 @@ export async function initializeSQLiteSchema(): Promise<void> {
 		console.error('Error applying SQLite migrations:', error);
 		throw error;
 	}
+}
+
+export async function closeSqlite() {
+    if (sqlite) {
+        sqlite.close();
+    }
 }

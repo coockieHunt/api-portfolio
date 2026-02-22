@@ -1,9 +1,10 @@
-import path from 'path';
+import path, { resolve } from 'path';
 import sharp from 'sharp';
-import { logConsole } from '../../middlewares/log.middlewar';
+import { logConsole } from '../../middlewares/log.middlewar.ts';
 
 export class AssetHelper {
-    private static assetsDirectory = path.join(process.cwd(), 'assets');
+    private static rawPath = process.env.ASSET_DIR || './assets';
+    private static assetsDirectory = resolve(process.cwd(), AssetHelper.rawPath);
 
     /**
      * Gets the assets directory path

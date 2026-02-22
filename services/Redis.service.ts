@@ -2,10 +2,10 @@
 import type { RedisClientType } from 'redis';
 
 // middlewares
-import { logConsole, writeToLog } from '../middlewares/log.middlewar';
+import { logConsole, writeToLog } from '../middlewares/log.middlewar.ts';
 
 //helpers
-import { validateKey } from '../utils/redis.helper';
+import { validateKey } from '../utils/redis.helper.ts';
 
 export let RedisClient: RedisClientType;
 

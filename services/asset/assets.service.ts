@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import { promises as fsPromises } from 'fs';
 
-import { AUTHORIZED_REDIS_KEYS } from '../../constants/redis.constant';
-import { hashGet, hashSet, hashDel, hashGetAll, cacheDel, isRedisReady } from '../../utils/cache.helper';
-import { logConsole } from '../../middlewares/log.middlewar';
-import { AssetHelper } from './assets.helper';
+import { AUTHORIZED_REDIS_KEYS } from '../../constants/redis.constant.ts';
+import { hashGet, hashSet, hashDel, hashGetAll, cacheDel, isRedisReady } from '../../utils/cache.helper.ts';
+import { logConsole } from '../../middlewares/log.middlewar.ts';
+import { AssetHelper } from './assets.helper.ts';
 
 export interface AssetDetail {
     file: string;

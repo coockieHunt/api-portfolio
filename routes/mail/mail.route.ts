@@ -1,11 +1,11 @@
 import express, { Router } from 'express';
 import type {Request, Response} from 'express';
-import MailController from './mail.controller';
-import { MailValidator } from './mail.validator';
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import MailController from './mail.controller.ts';
+import { MailValidator } from './mail.validator.ts';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const MailRoute: Router = express.Router({ mergeParams: true });
 

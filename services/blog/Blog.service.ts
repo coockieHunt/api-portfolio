@@ -1,31 +1,31 @@
 //helpers
-import { db } from '../../utils/sqllite.helper';
+import { db } from '../../utils/sqllite.helper.ts';
 
 //shema
-import { post_author, posts, postTags, tags } from '../../database/shema'; 
+import { post_author, posts, postTags, tags } from '../../database/shema.ts'; 
 
 //orm
 import { desc, eq, sql, inArray, like, and} from 'drizzle-orm';
 
 //services
-import { RedisClient } from '../../services/Redis.service';
+import { RedisClient } from '../../services/Redis.service.ts';
 
 //constants
-import { AUTHORIZED_REDIS_PREFIXES } from '../../constants/redis.constant';
+import { AUTHORIZED_REDIS_PREFIXES } from '../../constants/redis.constant.ts';
 
 //helpers
-import { withCache } from '../../utils/cache.helper'; 
-import { validateKey } from '../../utils/redis.helper';
-import { writeToLog } from '../../middlewares/log.middlewar';
+import { withCache } from '../../utils/cache.helper.ts'; 
+import { validateKey } from '../../utils/redis.helper.ts';
+import { writeToLog } from '../../middlewares/log.middlewar.ts';
 
 //config
-import cfg from '../../config/default';
+import cfg from '../../config/default.ts';
 
 //errors
-import { NotFoundError, ValidationError } from '../../utils/AppError';
+import { NotFoundError, ValidationError } from '../../utils/AppError.ts';
 
 //helpers
-import {BlogHelper} from './Blog.helper';
+import {BlogHelper} from './Blog.helper.ts';
 
 export class BlogService {
     /**

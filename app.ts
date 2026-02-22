@@ -1,20 +1,18 @@
-import dotenv from 'dotenv';
-dotenv.config({ 
-    quiet: true 
-});
-
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import chalk from 'chalk';
 import consola from 'consola';
 
+import Bree from 'bree';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import cfg from './config/default';
 import { createClient } from 'redis';
 import { RedisService } from './services/Redis.service';
 import { SendmailService } from './services/sendmail/Sendmail.service'; 
 
-import { pingSqlite, initializeSQLiteSchema } from './utils/sqllite.helper';
+import { pingSqlite, initializeSQLiteSchema, closeSqlite } from './utils/sqllite.helper';
 
 import { trackApiCall } from './middlewares/callApiCount.middlewar';
 import { allowOnlyFromIPs } from './middlewares/whiteList.middlewar';
@@ -38,23 +36,28 @@ import AuthorsRoute from './routes/authors/authors.route';
 import OpenGraphRouter from './routes/proxy/ogImage.route';
 import AssetsProxyRoute from './routes/proxy/assetsProxy.route';
 
-import { startFallbackCacheJob } from './jobs/FallbackCache.jobs';
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection:', reason);
+    process.exit(1);
+});
 
-const API_ROOT = cfg.ApiRoot ;
-const ASSET_ROOT = cfg.AssetRoot ;
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const API_ROOT = cfg.ApiRoot;
+const ASSET_ROOT = cfg.AssetRoot;
 
 const app = express();
 const PORT = cfg.port || 3000;
 
-app.set('trust proxy', 1); //FIX PROXY NGNIX
+app.set('trust proxy', 1);
 
-// CORS configuration
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        if (!origin) {
-            return callback(null, true);
-        }
-        
+        if (!origin) return callback(null, true);
         if (cfg.corsOrigins.includes(origin) || cfg.corsOrigins.includes('*')) {
             callback(null, true);
         } else {
@@ -67,22 +70,18 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 
-// Initialisation Redis
 const redisClient = createClient({
     password: cfg.redis.password,
     socket: {
         host: cfg.redis.host,
         port: cfg.redis.port,
         reconnectStrategy: (retries) => {
-            if (retries > 3) { 
-                return new Error("Redis connection failed after 3 attempts");
-            }
-            return 500; //retry att 
+            if (retries > 3) return new Error("Redis connection failed after 3 attempts");
+            return 500;
         }
     }
 });
 
-//load global middlewares
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -106,11 +105,9 @@ app.use(helmet({
 app.use(cors(corsOptions));
 app.use(TestingMiddleware);
 app.use(express.json({ limit: '20kb' }));
-app.use(trackApiCall); 
+app.use(trackApiCall);
 app.use(responseHandler);
 
-// Routes
-//allowOnlyFromIPs for ip restriction
 app.use(`${API_ROOT}/mail`, allowOnlyFromIPs, MailRoute);
 app.use(`${API_ROOT}/guestbook`, allowOnlyFromIPs, GuestBookRoute);
 app.use(`${API_ROOT}/blog`, allowOnlyFromIPs, BlogRoute);
@@ -124,11 +121,8 @@ app.use(`${API_ROOT}/projects`, allowOnlyFromIPs, ProjectRoute);
 app.use(`${API_ROOT}/gatus`, GatusRoute);
 app.use(`${API_ROOT}/`, RouteMap);
 
-
-//asset
 app.use(`${ASSET_ROOT}/opengraph`, allowOnlyFromIPs, OpenGraphRouter);
 app.use(`${ASSET_ROOT}/images`, allowOnlyFromIPs, AssetsProxyRoute);
-
 
 app.use((req, res, next) => {
     console.log(chalk.red(`[Routeur]`), "404 not found", chalk.gray(" → " + req.originalUrl));
@@ -141,11 +135,10 @@ app.use((req, res, next) => {
 
 app.use(errorHandler);
 
-// run
 async function startServer() {
     const requiredEnvVars = ['ACCESS_TOKEN_SECRET'];
     const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
-    
+
     if (missingEnvVars.length > 0) {
         consola.fatal(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
         process.exit(1);
@@ -154,11 +147,6 @@ async function startServer() {
     if (cfg.fallback.latency || cfg.fallback.sendError) {
         consola.warn('🛑 FALLBACK SIMULATION is ENABLED');
     }
-
-    consola.info(chalk.bold('Configuration Loaded:'));
-    console.log(`  ${chalk.blue('• API Root:')}   ${API_ROOT}`);
-    console.log(`  ${chalk.blue('• Asset Root:')} ${ASSET_ROOT}`);
-    console.log(`  ${chalk.blue('• Cache TTL:')}  ${cfg.blog.cache_ttl} seconds\n`);
 
     consola.start('Starting System Services...');
 
@@ -173,25 +161,101 @@ async function startServer() {
         await SendmailService.verifySmtpConnection();
         consola.success('SMTP Ready', chalk.dim(`(${process.env.MAIL_HOST})`));
 
-        // Start Fallback Cache Job
-        await startFallbackCacheJob();
-        consola.success('Fallback Cache Job Started', chalk.dim(`(${process.env.FALLBACK_CACHE_CRON || '0 * * * *'})`));
+        const CRON_SCHEDULE = process.env.FALLBACK_CACHE_CRON || '0 * * * *';
 
-        app.listen(Number(PORT), '0.0.0.0', () => {
+        const bree = new Bree({
+            defaultExtension: process.env.NODE_ENV === 'production' ? 'js' : 'ts',
+            root: join(__dirname, 'jobs'),
+            logger: false,
+            worker: {
+                execArgv: process.env.NODE_ENV === 'production' ? [] : ['--import', 'tsx'],
+                env: process.env
+            },
+            jobs: [{ name: 'FallbackCache.jobs', cron: CRON_SCHEDULE }]
+        });
+
+        await bree.start();
+
+        bree.on('worker created', (name) => {
+            console.log(chalk.dim('────────────────────────────────────────────────────────────'));
+            consola.info(chalk.cyanBright(`[Bree] Worker started → ${name}`));
+        });
+
+        bree.on('worker deleted', (name) => {
+            consola.success(chalk.green(`[Bree] Worker done → ${name}`));
+            console.log(chalk.dim('────────────────────────────────────────────────────────────'));
+        });
+
+        const connections = new Set<any>();
+
+        async function shutdown(signal: string) {
+            consola.warn(`[${signal}] shutdown...`);
+        
+            setTimeout(() => {
+                consola.error('Forced shutdown timeout');
+                process.exit(1);
+            }, 3000).unref();
+        
+            try {
+                for (const conn of connections) conn.destroy();
+        
+                await new Promise<void>(resolve => server.close(() => resolve()));
+                consola.success('HTTP server closed');
+        
+                await Promise.race([
+                    bree.stop(),
+                    new Promise(resolve => setTimeout(resolve, 1000))
+                ]);
+                consola.success('Bree stopped');
+        
+                if (redisClient.isOpen) {
+                    await redisClient.quit().catch(() => redisClient.disconnect());
+                }
+                consola.success('Redis closed');
+        
+                closeSqlite();
+                consola.success('SQLite closed');
+        
+                consola.success('Shutdown complete');
+        
+                process.exit(0);
+        
+            } catch (err) {
+                consola.error('Error during shutdown:', err);
+                process.exit(1);
+            }
+        }
+
+        process.on('SIGINT', () => shutdown('SIGINT'));  
+        process.on('SIGTERM', () => shutdown('SIGTERM')); 
+        process.once('SIGUSR2', () => shutdown('SIGUSR2')); 
+
+        let StartBorder = "green"
+        if (cfg.fallback.latency || cfg.fallback.sendError) {StartBorder = "yellow"}
+
+        const server = app.listen(Number(PORT), '0.0.0.0', () => {
             consola.box({
                 title: chalk.bold.green(' 🚀 SERVER READY '),
-                message: `Server listening on port: ${chalk.cyan.bold(PORT)}\nhttp://0.0.0.0:${PORT}`,
-                style: {
-                    padding: 1,
-                    borderColor: "green",
-                    borderStyle: "round",
-                },
+                message:
+                    `${chalk.greenBright('• PORT:')}   ${chalk.cyan.bold(PORT)} ${chalk.yellowBright(`(http://0.0.0.0:${PORT})`)}\n` +
+                    `${chalk.greenBright('• CRON:')}   ${chalk.cyan(CRON_SCHEDULE)} ${chalk.yellowBright('(Worker Threads)')}\n` +
+                    `${chalk.greenBright('• ENV:')}    ${chalk.cyan(process.env.NODE_ENV || 'development')}\n` +
+                    `${chalk.greenBright('• API Root:')} ${chalk.cyan(API_ROOT)}\n` +
+                    `${chalk.greenBright('• Asset Root:')} ${chalk.cyan(ASSET_ROOT)}\n` +
+                    `${chalk.greenBright('• Cache TTL:')} ${chalk.cyan(cfg.blog.cache_ttl + 's')}\n` +
+                    `${chalk.greenBright('• Fallback Simulation:')} ${cfg.fallback.latency || cfg.fallback.sendError ? chalk.red('ENABLED') : chalk.yellowBright('disabled')}`,
+                style: { padding: 1, borderColor: StartBorder, borderStyle: "round" },
             });
+        });
+
+        server.on('connection', (conn) => {
+            connections.add(conn);
+            conn.on('close', () => connections.delete(conn));
         });
 
     } catch (err: any) {
         consola.fatal('CRITICAL FAILURE DURING STARTUP');
-        consola.error(err); 
+        consola.error(err);
         process.exit(1);
     }
 }

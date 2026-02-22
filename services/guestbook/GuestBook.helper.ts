@@ -1,7 +1,7 @@
-import { RedisClient } from '../Redis.service';
-import { AUTHORIZED_REDIS_KEYS } from '../../constants/redis.constant';
-import { writeToLog } from '../../middlewares/log.middlewar';
-import { NotFoundError } from '../../utils/AppError';
+import { RedisClient } from '../Redis.service.ts';
+import { AUTHORIZED_REDIS_KEYS } from '../../constants/redis.constant.ts';
+import { writeToLog } from '../../middlewares/log.middlewar.ts';
+import { NotFoundError } from '../../utils/AppError.ts';
 
 interface GuestBookEntry {
     id: string;

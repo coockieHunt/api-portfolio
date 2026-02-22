@@ -1,8 +1,8 @@
-import { db } from '../../utils/sqllite.helper';
-import { tags } from '../../database/shema';
+import { db } from '../../utils/sqllite.helper.ts';
+import { tags } from '../../database/shema.ts';
 import { eq } from 'drizzle-orm';
-import { NotFoundError, ValidationError } from '../../utils/AppError';
-import { TagHelper } from './Tag.helper';
+import { NotFoundError, ValidationError } from '../../utils/AppError.ts';
+import { TagHelper } from './Tag.helper.ts';
 
 export class TagService {
     /**

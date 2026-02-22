@@ -1,9 +1,9 @@
 import type {Request, Response} from 'express';
-import { logConsole, writeToLog } from '../../middlewares/log.middlewar';
+import { logConsole, writeToLog } from '../../middlewares/log.middlewar.ts';
 import { uptime } from 'node:process';
-import { SendmailService } from '../../services/sendmail/Sendmail.service';
-import { RedisClient } from '../../services/Redis.service';
-import { pingSqlite } from '../../utils/sqllite.helper';
+import { SendmailService } from '../../services/sendmail/Sendmail.service.ts';
+import { RedisClient } from '../../services/Redis.service.ts';
+import { pingSqlite } from '../../utils/sqllite.helper.ts';
 
 class HealthController {
 	/**

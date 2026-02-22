@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import sendmail from '../../services/sendmail/Sendmail.service';
-import { logConsole, writeToLog } from '../../middlewares/log.middlewar';
+import sendmail from '../../services/sendmail/Sendmail.service.ts';
+import { logConsole, writeToLog } from '../../middlewares/log.middlewar.ts';
 
 class MailController {
 	/**

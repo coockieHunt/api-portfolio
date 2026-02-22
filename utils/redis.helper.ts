@@ -1,8 +1,8 @@
 //constants
-import { AUTHORIZED_REDIS_KEYS, AUTHORIZED_REDIS_PREFIXES } from "../constants/redis.constant";
+import { AUTHORIZED_REDIS_KEYS, AUTHORIZED_REDIS_PREFIXES } from "../constants/redis.constant.ts";
 
 //middlewares
-import { writeToLog } from "../middlewares/log.middlewar";
+import { writeToLog } from "../middlewares/log.middlewar.ts";
 
 //console
 import chalk from "chalk";

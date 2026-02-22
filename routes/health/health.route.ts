@@ -1,8 +1,8 @@
 import express, { Router } from 'express';
-import HealthController from './health.controller';
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import HealthController from './health.controller.ts';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const HealthRoute: Router = express.Router({ mergeParams: true });
 

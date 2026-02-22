@@ -13,9 +13,10 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": false,
+    "noEmit": true,
     "outDir": "./dist",
-    "rootDir": "./"
+    "rootDir": "./",
+    "allowImportingTsExtensions": true,
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.js"],
   "exclude": ["node_modules", "dist"]

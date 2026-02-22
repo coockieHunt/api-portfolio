@@ -1,9 +1,9 @@
 import express, {Router } from 'express';
 import type { Request, Response } from 'express';
 import sharp from 'sharp';
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { writeToLog, logConsole } from '../../middlewares/log.middlewar';
-import { AssetsService } from '../../services/asset/assets.service';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
+import { AssetsService } from '../../services/asset/assets.service.ts';
 import { param } from 'express-validator';
 
 const AssetsProxyRoute: Router = express.Router();

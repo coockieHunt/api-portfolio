@@ -1,6 +1,6 @@
-import { GuestBookService } from '../../services/guestbook/GuestBook.service';
+import { GuestBookService } from '../../services/guestbook/GuestBook.service.ts';
 import type {Request, Response} from 'express';
-import { logConsole, writeToLog } from '../../middlewares/log.middlewar';
+import { logConsole, writeToLog } from '../../middlewares/log.middlewar.ts';
 
 class GuestBookController {
 	async getAll(req: Request, res: Response) {

@@ -1,13 +1,13 @@
 import { Router} from "express";
 import type { Request, Response, NextFunction } from "express";
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
-import { authenticateToken, HybridAuthenticateToken } from '../../middlewares/authenticateToken.middlewar';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
+import { authenticateToken, HybridAuthenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
 
-import ProjectsController from './projects.controller';
-import { ProjectsValidator } from './projects.validator';
+import ProjectsController from './projects.controller.ts';
+import { ProjectsValidator } from './projects.validator.ts';
 
 const ProjectRoute: Router = Router({ mergeParams: true });
 

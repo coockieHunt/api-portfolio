@@ -5,12 +5,19 @@
  * Includes HTTP status codes and error details.
  */
 export class AppError extends Error {
+    public statusCode: number;
+    public details?: any;
+
     constructor(
-        public statusCode: number,
+        statusCode: number,
         message: string,
-        public details?: any
+        details?: any
     ) {
         super(message);
+        
+        this.statusCode = statusCode;
+        this.details = details;
+        
         Object.setPrototypeOf(this, AppError.prototype);
     }
 

@@ -2,17 +2,17 @@
 import express, { Router } from 'express';
 
 //controllers
-import AuthController from './auth.controller';
+import AuthController from './auth.controller.ts';
 
 //validators
-import { AuthValidator } from './auth.validator';
+import { AuthValidator } from './auth.validator.ts';
 
 // middlewares
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { authenticateToken } from '../../middlewares/authenticateToken.middlewar';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { authenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const AuthRoute: Router = express.Router({ mergeParams: true });
 

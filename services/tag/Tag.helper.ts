@@ -1,7 +1,7 @@
-import { db } from '../../utils/sqllite.helper';
-import { tags } from '../../database/shema';
+import { db } from '../../utils/sqllite.helper.ts';
+import { tags } from '../../database/shema.ts';
 import { eq } from 'drizzle-orm';
-import { NotFoundError } from '../../utils/AppError';
+import { NotFoundError } from '../../utils/AppError.ts';
 
 interface TagResult {
     id: number;

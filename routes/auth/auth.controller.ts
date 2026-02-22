@@ -1,9 +1,9 @@
-import { AuthService } from '../../services/auth/Auth.service';
+import { AuthService } from '../../services/auth/Auth.service.ts';
 import type {Request, Response} from 'express';
-import { writeToLog, logConsole } from '../../middlewares/log.middlewar';
+import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { AuthError } from '../../utils/AppError';
+import { AuthError } from '../../utils/AppError.ts';
 
 class AuthController {
     async login(req: Request, res: Response) {

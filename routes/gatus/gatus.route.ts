@@ -1,11 +1,11 @@
 import express, { Router } from 'express';
-import GatusController from './gatus.controller';
-import { GatusValidator } from './gatus.validator';
+import GatusController from './gatus.controller.ts';
+import { GatusValidator } from './gatus.validator.ts';
 
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const GatusRoute: Router = express.Router({ mergeParams: true });
 

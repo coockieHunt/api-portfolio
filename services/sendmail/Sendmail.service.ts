@@ -1,6 +1,6 @@
 //middleware
-import { logConsole, writeToLog } from '../../middlewares/log.middlewar';
-import { SendmailHelper } from './Sendmail.helper';
+import { logConsole, writeToLog } from '../../middlewares/log.middlewar.js';
+import { SendmailHelper } from './Sendmail.helper.js';
 
 interface SendMailResponse {
     success: boolean;

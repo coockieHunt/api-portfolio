@@ -1,0 +1,80 @@
+[
+  {
+    "buildTime": 44,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:01:04.939Z"
+  },
+  {
+    "buildTime": 68,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:03:04.799Z"
+  },
+  {
+    "buildTime": 80,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:03:08.466Z"
+  },
+  {
+    "buildTime": 48,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:04:04.510Z"
+  },
+  {
+    "buildTime": 66,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:05:04.836Z"
+  },
+  {
+    "buildTime": 49,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:06:08.125Z"
+  },
+  {
+    "buildTime": 64,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:06:08.217Z"
+  },
+  {
+    "buildTime": 42,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:08:01.091Z"
+  },
+  {
+    "buildTime": 43,
+    "file": "portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:09:08.209Z"
+  },
+  {
+    "buildTime": 51,
+    "file": "/home/jonathan/app/api-mail/portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:10:04.126Z"
+  },
+  {
+    "buildTime": 43,
+    "file": "/home/jonathan/app/api-mail/portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:11:07.477Z"
+  },
+  {
+    "buildTime": 42,
+    "file": "/home/jonathan/app/api-mail/portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:12:07.575Z"
+  },
+  {
+    "buildTime": 57,
+    "file": "/home/jonathan/app/api-mail/portfolio_reworks/public/fallback/worker_cache.json",
+    "sizeBytes": 7496,
+    "timestamp": "2026-02-22T01:13:04.299Z"
+  }
+]

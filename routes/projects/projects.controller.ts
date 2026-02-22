@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { logConsole, writeToLog } from '../../middlewares/log.middlewar';
-import { ProjectsService } from '../../services/projects/Projects.service';
+import { logConsole, writeToLog } from '../../middlewares/log.middlewar.ts';
+import { ProjectsService } from '../../services/projects/Projects.service.ts';
 
 class ProjectsController {
     async getProjects(req: Request, res: Response) {

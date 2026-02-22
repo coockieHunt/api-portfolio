@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import staticConfig from '../static.config.json';
-import { parseList } from '../utils/redis.helper';
+import staticConfig from '../static.config.json' with { type: 'json' };
+import { parseList } from '../utils/redis.helper.ts';
 
 interface MailTransportConfig {
 	host: string;

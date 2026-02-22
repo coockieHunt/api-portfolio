@@ -1,6 +1,6 @@
 import { body, query, param } from 'express-validator';
-import config from '../../config/default';
-import { AuthError } from '../../utils/AppError';
+import config from '../../config/default.ts';
+import { AuthError } from '../../utils/AppError.ts';
 
 const secretConfig = config.SecretSystem;
 

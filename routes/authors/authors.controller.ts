@@ -1,6 +1,6 @@
-import { AuthorService } from '../../services/author/Author.service';
+import { AuthorService } from '../../services/author/Author.service.ts';
 import type { Request, Response } from 'express';
-import { writeToLog, logConsole } from '../../middlewares/log.middlewar';
+import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
 
 class AuthorsController {
     /**

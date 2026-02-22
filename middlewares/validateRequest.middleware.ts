@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import { logConsole, writeToLog } from './log.middlewar';
+import { logConsole, writeToLog } from './log.middlewar.ts';
 
 /**
  * Request validation middleware

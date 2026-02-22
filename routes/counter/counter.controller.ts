@@ -1,7 +1,7 @@
-import { RedisService, RedisClient } from '../../services/Redis.service'; 
+import { RedisService, RedisClient } from '../../services/Redis.service.ts'; 
 import type {Request, Response} from 'express';
-import { writeToLog, logConsole } from '../../middlewares/log.middlewar';
-import { AUTHORIZED_REDIS_KEYS } from '../../constants/redis.constant';
+import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
+import { AUTHORIZED_REDIS_KEYS } from '../../constants/redis.constant.ts';
 
 class CounterController {
     private getValidatedRedisKey(name: string): string | null {

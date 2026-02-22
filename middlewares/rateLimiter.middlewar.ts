@@ -3,14 +3,14 @@ import chalk from 'chalk';
 import { match } from 'path-to-regexp'; 
 import { consola } from "consola";
 
-import { RedisClient } from '../services/Redis.service';
-import { AuthService } from '../services/auth/Auth.service';
+import { RedisClient } from '../services/Redis.service.ts';
+import { AuthService } from '../services/auth/Auth.service.ts';
 
-import cfg from '../config/default';
+import cfg from '../config/default.ts';
 
-import { logConsole, writeToLog } from '../middlewares/log.middlewar';
+import { logConsole, writeToLog } from '../middlewares/log.middlewar.ts';
 
-import { normalizeUrl } from '../utils/url.helper';
+import { normalizeUrl } from '../utils/url.helper.ts';
 
 import jwt from 'jsonwebtoken';
 

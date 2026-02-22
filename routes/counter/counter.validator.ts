@@ -2,7 +2,7 @@
 import { param } from 'express-validator';
 
 //controllers
-import CounterController  from './counter.controller';
+import CounterController  from './counter.controller.ts';
 
 export const CounterValidator = {
     getCounter: [

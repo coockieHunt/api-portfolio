@@ -1,11 +1,11 @@
 import express, { Router } from 'express';
-import AuthorsController from './authors.controller';
-import { AuthorsValidator } from './authors.validator';
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { authenticateToken } from '../../middlewares/authenticateToken.middlewar';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import AuthorsController from './authors.controller.ts';
+import { AuthorsValidator } from './authors.validator.ts';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { authenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const AuthorsRoute: Router = express.Router({ mergeParams: true });
 

@@ -1,7 +1,7 @@
-import { db } from '../../utils/sqllite.helper';
-import { post_author, posts } from '../../database/shema';
+import { db } from '../../utils/sqllite.helper.ts';
+import { post_author, posts } from '../../database/shema.ts';
 import { eq } from 'drizzle-orm';
-import { BlogService } from '../blog/Blog.service';
+import { BlogService } from '../blog/Blog.service.ts';
 
 export class AuthorService {
     /**

@@ -2,7 +2,7 @@
 import type { Request, Response, NextFunction } from 'express';
 
 // types
-import type { ApiResponse } from '../types/api';
+import type { ApiResponse } from '../types/api.ts';
 import chalk from 'chalk';
 
 const SpacerStart = (method: string, url: string) => {

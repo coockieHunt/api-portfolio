@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
-import { AppError } from '../utils/AppError';
-import { logConsole, writeToLog } from './log.middlewar';
+import { AppError } from '../utils/AppError.ts';
+import { logConsole, writeToLog } from './log.middlewar.ts';
 
 /**
  * Global Error Handler Middleware

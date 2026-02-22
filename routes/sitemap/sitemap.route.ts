@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
-import SitemapController from './sitemap.controller';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
-import rateLimiter from '../../middlewares/rateLimiter.middlewar';
+import SitemapController from './sitemap.controller.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
+import rateLimiter from '../../middlewares/rateLimiter.middlewar.ts';
 
 const RouteMap: Router = express.Router({ mergeParams: true });
 

@@ -1,8 +1,8 @@
 //service
-import { RedisClient } from '../services/Redis.service';
+import { RedisClient } from '../services/Redis.service.ts';
 
 //helpers
-import { validateKey } from '../utils/redis.helper';
+import { validateKey } from '../utils/redis.helper.ts';
 
 //console
 import chalk from 'chalk';

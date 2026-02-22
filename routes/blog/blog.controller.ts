@@ -1,7 +1,7 @@
-import config from '../../config/default';
-import { BlogService } from '../../services/blog/Blog.service';
+import config from '../../config/default.ts';
+import { BlogService } from '../../services/blog/Blog.service.ts';
 import type {Request, Response} from 'express';
-import { writeToLog, logConsole } from '../../middlewares/log.middlewar';
+import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
 
 class BlogController {
     async getAll(req: Request, res: Response) {

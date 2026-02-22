@@ -1,10 +1,10 @@
 import express, { Router } from 'express';
-import CounterController from './counter.controller';
-import { CounterValidator } from './counter.validator';
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { authenticateToken } from '../../middlewares/authenticateToken.middlewar';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import CounterController from './counter.controller.ts';
+import { CounterValidator } from './counter.validator.ts';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { authenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const CounterRoute: Router = express.Router({ mergeParams: true });
 

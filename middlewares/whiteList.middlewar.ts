@@ -2,10 +2,10 @@
 import type { Request, Response, NextFunction } from 'express';
 
 // config
-import config from '../config/default.js';
+import config from '../config/default.ts';
 
 // log
-import { logConsole, writeToLog } from './log.middlewar.js';
+import { logConsole, writeToLog } from './log.middlewar.ts';
 
 const allowedIPs = config.allowedIPs;
 

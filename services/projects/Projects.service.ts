@@ -1,5 +1,5 @@
-import { db } from '../../utils/sqllite.helper';
-import { projects } from '../../database/shema';
+import { db } from '../../utils/sqllite.helper.ts';
+import { projects } from '../../database/shema.ts';
 import { and, desc, eq, sql } from 'drizzle-orm';
 
 export class ProjectsService {

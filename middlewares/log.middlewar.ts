@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import consola from 'consola';
 
 // config
-import cfg from '../config/default';
+import cfg from '../config/default.ts';
 
 
 interface LogConfigInterface {

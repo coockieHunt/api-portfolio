@@ -1,12 +1,12 @@
 import express, { Router } from 'express';
 import type { Request, Response } from 'express';
-import TagsController from './tags.controller';
-import { TagsValidator } from './tags.validator';
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { authenticateToken,  HybridAuthenticateToken} from '../../middlewares/authenticateToken.middlewar';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import TagsController from './tags.controller.ts';
+import { TagsValidator } from './tags.validator.ts';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { authenticateToken,  HybridAuthenticateToken} from '../../middlewares/authenticateToken.middlewar.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const TagsRoute: Router = express.Router({ mergeParams: true });
 

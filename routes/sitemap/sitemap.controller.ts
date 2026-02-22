@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { BlogService } from "../../services/blog/Blog.service";
-import { writeToLog, logConsole } from "../../middlewares/log.middlewar";
+import { BlogService } from "../../services/blog/Blog.service.ts";
+import { writeToLog, logConsole } from "../../middlewares/log.middlewar.ts";
 
 const escapeXml = (unsafe: string): string => {
   return unsafe.replace(/[<>&'"]/g, (c) => {

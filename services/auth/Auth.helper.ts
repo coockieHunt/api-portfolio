@@ -1,6 +1,6 @@
-import { RedisClient } from '../../services/Redis.service';
-import { AUTHORIZED_REDIS_PREFIXES } from '../../constants/redis.constant';
-import { validateKey } from '../../utils/redis.helper';
+import { RedisClient } from '../../services/Redis.service.ts';
+import { AUTHORIZED_REDIS_PREFIXES } from '../../constants/redis.constant.ts';
+import { validateKey } from '../../utils/redis.helper.ts';
 
 export class AuthHelper {
     /**

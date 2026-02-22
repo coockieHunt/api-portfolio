@@ -1,13 +1,13 @@
 import express, { Router } from 'express';
-import BlogController from './blog.controller';
-import { BlogValidator } from './blog.validator';
+import BlogController from './blog.controller.ts';
+import { BlogValidator } from './blog.validator.ts';
 
 // middlewares
-import { rateLimiter } from '../../middlewares/rateLimiter.middlewar';
-import { responseHandler } from '../../middlewares/responseHandler.middlewar';
-import { validateRequest } from '../../middlewares/validateRequest.middleware';
-import { authenticateToken, HybridAuthenticateToken } from '../../middlewares/authenticateToken.middlewar';
-import { asyncHandler } from '../../middlewares/errorHandler.middleware';
+import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
+import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
+import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
+import { authenticateToken, HybridAuthenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const BlogRoute: Router = express.Router({ mergeParams: true });
 
