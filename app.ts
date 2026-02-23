@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import compressionLib from 'compression';
 import helmet from 'helmet';
 import chalk from 'chalk';
 import consola from 'consola';
@@ -32,6 +33,7 @@ import RouteMap from './routes/sitemap/sitemap.route';
 import GatusRoute from './routes/gatus/gatus.route';
 import ProjectRoute from './routes/projects/projects.route';
 import AuthorsRoute from './routes/authors/authors.route';
+import LogsRoute from './routes/logs/logs.route';
 
 import OpenGraphRouter from './routes/proxy/ogImage.route';
 import AssetsProxyRoute from './routes/proxy/assetsProxy.route';
@@ -54,7 +56,6 @@ const app = express();
 const PORT = cfg.port || 3000;
 
 app.set('trust proxy', 1);
-
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         if (!origin) return callback(null, true);
@@ -82,6 +83,7 @@ const redisClient = createClient({
     }
 });
 
+app.use(compressionLib());
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -112,14 +114,18 @@ app.use(`${API_ROOT}/mail`, allowOnlyFromIPs, MailRoute);
 app.use(`${API_ROOT}/guestbook`, allowOnlyFromIPs, GuestBookRoute);
 app.use(`${API_ROOT}/blog`, allowOnlyFromIPs, BlogRoute);
 app.use(`${API_ROOT}/auth`, allowOnlyFromIPs, AuthRoute);
-app.use(`${API_ROOT}/counter`, CounterRoute);
-app.use(`${API_ROOT}/health`, HealthRoute);
 app.use(`${API_ROOT}/tags`, allowOnlyFromIPs, TagsRoute);
 app.use(`${API_ROOT}/authors`, allowOnlyFromIPs, AuthorsRoute);
 app.use(`${API_ROOT}/assets`, allowOnlyFromIPs, AssetsRoute);
 app.use(`${API_ROOT}/projects`, allowOnlyFromIPs, ProjectRoute);
+app.use(`${API_ROOT}/logs`, allowOnlyFromIPs, LogsRoute);
+
+app.use(`${API_ROOT}/counter`, CounterRoute);
+app.use(`${API_ROOT}/health`, HealthRoute);
 app.use(`${API_ROOT}/gatus`, GatusRoute);
+
 app.use(`${API_ROOT}/`, RouteMap);
+
 
 app.use(`${ASSET_ROOT}/opengraph`, allowOnlyFromIPs, OpenGraphRouter);
 app.use(`${ASSET_ROOT}/images`, allowOnlyFromIPs, AssetsProxyRoute);

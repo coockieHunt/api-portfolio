@@ -100,6 +100,96 @@
 					"method": "POST"
 				}
 			},
+			"authors.getAll": {
+				"windowSeconds": 60,
+				"maxRequests": 100,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/authors/",
+					"method": "GET"
+				}
+			},
+			"authors.getById": {
+				"windowSeconds": 60,
+				"maxRequests": 100,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/authors/:id",
+					"method": "GET"
+				}
+			},
+			"authors.delete": {
+				"windowSeconds": 60,
+				"maxRequests": 20,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/authors/:id",
+					"method": "DELETE"
+				}
+			},
+			"logs.get": {
+				"windowSeconds": 60,
+				"maxRequests": 100,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/logs/",
+					"method": "GET"
+				}
+			},
+			"logs.delete": {
+				"windowSeconds": 60,
+				"maxRequests": 20,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/logs/:id",
+					"method": "DELETE"
+				}
+			},
+			"assets.upload": {
+				"windowSeconds": 60,
+				"maxRequests": 20,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/assets/upload/",
+					"method": "POST"
+				}
+			},
+			"assets.delete": {
+				"windowSeconds": 60,
+				"maxRequests": 30,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/assets/delete/:folder/:id",
+					"method": "DELETE"
+				}
+			},
+			"assets.cache.clear": {
+				"windowSeconds": 60,
+				"maxRequests": 20,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/assets/cache/clear/:id",
+					"method": "DELETE"
+				}
+			},
+			"assets.cache.all": {
+				"windowSeconds": 60,
+				"maxRequests": 5,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/assets/cache/all",
+					"method": "DELETE"
+				}
+			},
+			"assets.list": {
+				"windowSeconds": 60,
+				"maxRequests": 50,
+				"adminBypass": true,
+				"match": {
+					"url": "/api/assets/list",
+					"method": "GET"
+				}
+			},
 			"guestbook.delete": {
 				"windowSeconds": 60,
 				"maxRequests": 10,
@@ -369,53 +459,6 @@
 					"method": "DELETE"
 				}
 			},
-
-			"assets.upload": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/upload",
-					"method": "POST"
-				}
-			},
-			"assets.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 30,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/delete/:folder/:id",
-					"method": "DELETE"
-				}
-			},
-			"assets.cache.clear": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/cache/clear/:id",
-					"method": "DELETE"
-				}
-			},
-			"assets.cache.all": {
-				"windowSeconds": 60,
-				"maxRequests": 5,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/cache/all",
-					"method": "DELETE"
-				}
-			},
-			"assets.list": {
-				"windowSeconds": 60,
-				"maxRequests": 50,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/list",
-					"method": "GET"
-				}
-			},
-
 			"sitemap.get": {
 				"windowSeconds": 60,
 				"maxRequests": 200,
@@ -506,15 +549,6 @@
 				"adminBypass": true,
 				"match": {
 					"url": "/assets/images/proxy/:folder/:id",
-					"method": "GET"
-				}
-			},
-			"assets.proxy.resize": {
-				"windowSeconds": 60,
-				"maxRequests": 50,
-				"adminBypass": true,
-				"match": {
-					"url": "/assets/images/proxy/:public_id/size/:w/:h",
 					"method": "GET"
 				}
 			}

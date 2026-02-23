@@ -1,11 +1,12 @@
 meta {
-  name: 📖 Get All Authors
+  name: 🔒 Get All FailbackLog list
   type: http
-  seq: 1
+  seq: 3
 }
 
 get {
-  url: {{base_url}}{{endPointApi}}/authors
+  url: {{base_url}}{{endPointApi}}/logs/fallback/list/
+  body: none
   auth: inherit
 }
 
@@ -13,17 +14,17 @@ tests {
   test("Status code is 200", function() {
     expect(res.getStatus()).to.equal(200);
   });
-
+  
   test("Response success is true", function() {
     const body = res.getBody();
     expect(body.success).to.be.true;
   });
-
+  
   test("Response is an array", function() {
     const body = res.getBody();
     expect(body.data).to.be.an('array');
   });
-
+  
   test("Authors have correct structure", function() {
     const body = res.getBody();
     if (body.data.length > 0) {
