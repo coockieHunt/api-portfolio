@@ -129,12 +129,26 @@ docs {
   }
   ```
   
-  ### Token Usage
+  ### Token Usage & Authentication
   
-  Use the returned token in subsequent admin requests:
-  ```
-  Authorization: Bearer {token}
-  ```
+  After login, the token is managed in two ways:
   
-  Token expires in 24 hours.
+  **1. HttpOnly Cookie (Recommended for web apps)**
+  - The server automatically sets the token in an `httpOnly` cookie
+  - This cookie is automatically sent by browsers/Axios with `withCredentials: true`
+  - More secure (immune to XSS attacks)
+  - Used automatically by the Portfolio Backend (portfolio_back)
+  
+  **2. Authorization Header (For API clients like Bruno)**
+  - The returned token is stored in the `jwt_token` variable
+  - Use it in subsequent admin requests with:
+  ```
+  Authorization: Bearer {jwt_token}
+  ```
+  - This is the method Bruno uses for authenticated requests
+  
+  **Token Expiration & Revocation**
+  - Token expires in 24 hours
+  - Revoked tokens are tracked in Redis
+  - Both methods (cookie + header) are supported by the API
 }

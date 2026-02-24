@@ -1,6 +1,5 @@
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
-import { join, resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join, resolve } from 'node:path';
 import { parentPort } from 'node:worker_threads'; 
 import chalk from 'chalk';
 import consola from 'consola';
@@ -14,7 +13,6 @@ import { RedisService } from '../services/Redis.service.ts';
 import { createClient } from 'redis';
 import cfg from '../config/default.ts';
 
-const __filename = fileURLToPath(import.meta.url);
 
 const rawPath = process.env.FALLBACK_CACHE_DIR || './portfolio_reworks/public/fallback';
 const OUTPUT_DIR = resolve(process.cwd(), rawPath);

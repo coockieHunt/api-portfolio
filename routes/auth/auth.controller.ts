@@ -19,28 +19,60 @@ class AuthController {
             process.env.ACCESS_TOKEN_SECRET as string, 
             { expiresIn: '24h' }
         );
+
+        const tokenTTL = Number(process.env.TOKEN_TTL_REVOCATION) || 86400;
+        res.cookie('token', tokenSign, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', 
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+            maxAge: tokenTTL * 1000 // TTL  ms
+        });
+
         logConsole("POST", "/auth/login", "OK", "User logged in successfully");
         writeToLog("Login successful", "auth");
         return res.success({ token: tokenSign }, 'Login successful');
     }
 
-    async logout(req: Request, res: Response) {
-        const token = req.headers['authorization']?.split(' ')[1];
-                
+    async me(req: Request, res: Response) {
+        const token = req.cookies?.token;
+
         if (!token) {
             throw new AuthError('No token provided');
         }
 
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string);
+        try {
+            const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string);
+            logConsole("GET", "/auth/me", "OK", "User authenticated", { user: decoded });
+            return res.success(decoded, 'User authenticated');
+        } catch (error) {
+            throw new AuthError('Invalid token');
+        }
+    }
 
-        const isRevoked = await AuthService.isTokenRevoked(token);
+    async logout(req: Request, res: Response) {
+        const token = req.headers['authorization']?.split(' ')[1];
+        const cookieToken = req.cookies?.token;
+        const usedToken = token || cookieToken;
+
+        if (!usedToken) {
+            throw new AuthError('No token provided');
+        }
+
+        jwt.verify(usedToken, process.env.ACCESS_TOKEN_SECRET as string);
+
+        const isRevoked = await AuthService.isTokenRevoked(usedToken);
         if (isRevoked) {
-            logConsole("POST", "/auth/logout", "WARN", "Token already revoked", { token });
+            logConsole("POST", "/auth/logout", "WARN", "Token already revoked", { token: usedToken });
             throw new AuthError('Token already revoked');
         }
 
-        await AuthService.revokeToken(token);
-        logConsole("POST", "/auth/logout", "OK", "Token revoked successfully", { token });
+        await AuthService.revokeToken(usedToken);
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        });
+        logConsole("POST", "/auth/logout", "OK", "Token revoked successfully", { token: usedToken });
         writeToLog("Logout successful", "auth");
         return res.success({}, 'Logout successful');
     }

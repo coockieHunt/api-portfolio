@@ -31,6 +31,18 @@ AuthRoute.post('/login',
 );
 
 /**
+ * GET /me - Check authentication status
+ * Verify if the user is authenticated by checking the JWT cookie
+ *  @param req Express Request object
+ *  @param res Express Response object
+ */
+AuthRoute.get('/me',
+    authenticateToken,
+    asyncHandler(AuthController.me),
+    responseHandler
+);
+
+/**
  * POST /logout - User logout
  * Revoke the JWT token to log out the user
  *  @param req Express Request object

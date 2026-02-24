@@ -10,11 +10,11 @@
     "start": "tsx app.ts",
     "kill-port": "fuser -k 3001/tcp || true",
     "dev": "npm run kill-port && nodemon --signal SIGTERM --watch . --ext ts,js,json --exec 'node --import tsx app.ts'",
-    "hash": "node ./scripts/generateHash.js",
     "build": "tsup app.ts jobs/FallbackCache.jobs.ts --format esm --outDir dist"
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",
+    "@types/cookie-parser": "^1.4.10",
     "@vercel/og": "^0.8.6",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.6.0",
@@ -24,6 +24,7 @@
     "compression": "^1.8.1",
     "config": "^4.1.1",
     "consola": "^3.4.2",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",

@@ -106,7 +106,14 @@ docs {
   
   ### Notes
   
-  - The token is blacklisted immediately after logout
+  - The token is blacklisted immediately after logout (affects both methods: cookie + Authorization header)
   - Subsequent requests with this token will be rejected
+  - HttpOnly cookie is cleared by the browser
   - Token blacklist expires automatically after 24 hours
+  
+  ### Authentication Methods Supported
+  
+  Logout can be triggered with either:
+  - **Authorization Header**: `Authorization: Bearer {jwt_token}` (used by Bruno)
+  - **HttpOnly Cookie**: Automatically sent by browsers/Axios (used by Portfolio Backend)
 }

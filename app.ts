@@ -4,6 +4,7 @@ import compressionLib from 'compression';
 import helmet from 'helmet';
 import chalk from 'chalk';
 import consola from 'consola';
+import cookieParser from 'cookie-parser';
 
 import Bree from 'bree';
 import { fileURLToPath } from 'node:url';
@@ -107,6 +108,7 @@ app.use(helmet({
 app.use(cors(corsOptions));
 app.use(TestingMiddleware);
 app.use(express.json({ limit: '20kb' }));
+app.use(cookieParser());
 app.use(trackApiCall);
 app.use(responseHandler);
 

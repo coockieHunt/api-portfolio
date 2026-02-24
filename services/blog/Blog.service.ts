@@ -50,6 +50,7 @@ export class BlogService {
             post: posts,
             author: {
                 name: post_author.name,
+                describ: post_author.describ
             }
         })
         .from(posts)

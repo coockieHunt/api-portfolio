@@ -3,11 +3,7 @@ meta {
 }
 
 auth {
-  mode: bearer
-}
-
-auth:bearer {
-  token: {{auth_token}}
+  mode: inherit
 }
 
 vars:pre-request {
@@ -21,18 +17,50 @@ docs {
   
   This collection contains all the necessary requests to interact with the Portfolio API. It is organized by domain and includes both functional tests and security/validation tests.
   
-  ## 🛠 Setup & Environment
+  ## � Authentication System
+  
+  The API uses JWT-based authentication with support for two delivery methods:
+  
+  ### 1. HttpOnly Cookies (Recommended for Web)
+  - Token is automatically set by the server after login
+  - Automatically sent by browsers/web clients with `withCredentials: true`
+  - Secure against XSS attacks (JavaScript cannot access httpOnly cookies)
+  - Used by the Portfolio Backend (portfolio_back)
+  
+  ### 2. Authorization Header (For API Clients)
+  - Token is returned in the login response
+  - Must be included manually in the `Authorization: Bearer {token}` header
+  - Used by API clients like Bruno, curl, etc.
+  
+  ### Login Flow
+  
+  1. **Send password** to `POST /auth/login`
+  2. **Receive JWT token** in response body
+  3. **Token is stored** in an httpOnly cookie AND returned in response
+  4. **Use token** in subsequent requests via Authorization header or cookie
+  
+  ### Important Notes
+  
+  - Both authentication methods are verified by the backend middleware
+  - Tokens expire in 24 hours
+  - Logout revokes the token in both delivery methods
+  - For Bruno: Use the `{{jwt_token}}` variable in Authorization header
+  - For Portfolio Backend: Cookie is sent automatically with `withCredentials: true`
+  
+  ### Environment Setup
   
   Before running any requests, ensure you have configured your environment:
   
-  > **Note:** Routes marked with 🔒 are secured. You must log in before accessing them.
+  1. **Active Environment**: Select the `dev` or `prod` environment in Bruno (top right corner)
+  2. **Required Variables**:
+    - `base_url`: The root URL of your API (e.g., `http://localhost:3001` for dev)
+    - `endPointApi`: API path (e.g., `/api`)
+    - `endPointAsset`: Assets path (e.g., `/assets`)
+    - `auth_token`: Automatically set after logging in via `POST /auth/login`
   
-  1. **Active Environment**: Select the `Local` or `Production` environment in the top right corner.
-  2. **Variables**:
-    - `base_url`: The root URL of your API (e.g., `http://localhost:3001/api`).
-    - `admin_password`: The passkey for the Guestbook easter egg (intentionally hardcoded/public).
-  
-  ## 📂 Structure
+  3. **Before Making Requests**:
+    - Start with `🔒 Login` to authenticate and set `auth_token`
+    - All 🔒 protected routes will use this token automatically
   
   - **📝 Blog**: Full blog management (CRUD, Publishing, Cache clearing).
   - **📖 Guestbook**: Handle user messages (Read, Write, Delete).
