@@ -122,7 +122,13 @@ export async function hashSet(
     validateKey(key);
 
     if (!RedisClient || !RedisClient.isReady) {
-        throw new Error("Redis client is not connected.");
+        console.log(
+            chalk.cyan(`[CACHE] `) +
+            chalk.red(`SKIP  `) +
+            chalk.gray(`| Redis not ready`) +
+            chalk.gray(` | Key: ${key}:${field}`)
+        );
+        return false;
     }
 
     try {

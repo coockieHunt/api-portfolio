@@ -25,6 +25,18 @@ export class RedisService {
         RedisClient.on('error', (err: Error) => {
             writeToLog(`Redis Runtime Error: ${err.message}`, 'redis');
         });
+
+        RedisClient.on('ready', () => {
+            writeToLog('Redis ready', 'redis');
+        });
+
+        RedisClient.on('reconnecting', () => {
+            writeToLog('Redis reconnecting...', 'redis');
+        });
+
+        RedisClient.on('end', () => {
+            writeToLog('Redis connection ended', 'redis');
+        });
         
         try {
             await RedisClient.connect(); 

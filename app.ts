@@ -80,8 +80,8 @@ const redisClient = createClient({
         host: cfg.redis.host,
         port: cfg.redis.port,
         reconnectStrategy: (retries) => {
-            if (retries > 3) return new Error("Redis connection failed after 3 attempts");
-            return 500;
+            const delayMs = Math.min(5000, Math.max(250, retries * 250));
+            return delayMs;
         }
     }
 });

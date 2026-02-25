@@ -90,7 +90,7 @@ export const HybridAuthenticateToken = async (req: Request, res: Response, next:
     if (!token) {return next();}//no token guest
 
     try {
-        const isRevoked = await AuthService.isTokenRevoked(token);
+        const isRevoked = await AuthService.isTokenRevoked(token, { failOpen: true });
         if (isRevoked) {return next();}//token revoked guest
 
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (err, user) => {

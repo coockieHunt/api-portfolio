@@ -447,7 +447,8 @@ export class BlogService {
         validateKey(versionKey);
         
         if (!RedisClient || !RedisClient.isReady) {
-            throw new ValidationError("Redis client is not connected.");
+            writeToLog(`BlogService CACHE DELETE skip slug=${slug} redis=down`, 'blog');
+            return false;
         }
 
         try {
@@ -467,7 +468,13 @@ export class BlogService {
      */
     static async clearAllCache() {
         if (!RedisClient || !RedisClient.isReady) {
-            throw new ValidationError("Redis client is not connected.");
+            writeToLog('BlogService CACHE CLEAR skip redis=down', 'blog');
+            return {
+                status: 'skipped',
+                total_keys_cleared: 0,
+                keys_deleted: [],
+                batches_processed: 0
+            };
         }
         
         try {
@@ -524,7 +531,8 @@ export class BlogService {
         validateKey(key);
 
         if (!RedisClient || !RedisClient.isReady) {
-            throw new ValidationError("Redis client is not connected.");
+            writeToLog(`BlogService VERSION GET skip slug=${slug} redis=down`, 'blog');
+            return null;
         }
 
         try {
@@ -541,11 +549,13 @@ export class BlogService {
         validateKey(key);
 
         if (!RedisClient || !RedisClient.isReady) {
-            throw new ValidationError("Redis client is not connected.");
+            writeToLog(`BlogService VERSION UPDATE skip slug=${slug} redis=down`, 'blog');
+            return false;
         }
 
         try {
             await RedisClient.setEx(key, cfg.blog.cache_ttl, data);
+            return true;
         } catch (error) {
             console.error(`Error updating post version for slug ${slug}:`, error);
             throw error;

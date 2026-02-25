@@ -31,7 +31,8 @@
 		"default": {
 			"windowSeconds": 60,
 			"maxRequests": 20,
-			"adminBypass": false
+			"adminBypass": false,
+			"stopInRedisDown": false
 		},
 
 		"routes": {
@@ -49,6 +50,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 40,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/counter/:name",
 					"method": "GET"
@@ -58,6 +60,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 40,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/counter/:name/increment",
 					"method": "POST"
@@ -66,7 +69,7 @@
 			"counter.decr": {
 				"windowSeconds": 60,
 				"maxRequests": 40,
-				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/counter/:name/decrement",
 					"method": "POST"
@@ -76,6 +79,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 7,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/counter/:name",
 					"method": "DELETE"
@@ -86,6 +90,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 7,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/guestbook/",
 					"method": "GET"
@@ -95,6 +100,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 6,
 				"adminBypass": false,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/guestbook/",
 					"method": "POST"
@@ -104,6 +110,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/authors/",
 					"method": "GET"
@@ -113,6 +120,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/authors/:id",
 					"method": "GET"
@@ -194,6 +202,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 10,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/guestbook/:id",
 					"method": "DELETE"
@@ -213,6 +222,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 10,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/auth/logout",
 					"method": "POST"
@@ -223,6 +233,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 150,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/blog/all",
 					"method": "GET"
@@ -232,6 +243,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 150,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/blog/offset",
 					"method": "GET"
@@ -241,6 +253,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/blog/:slug",
 					"method": "GET"
@@ -305,6 +318,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/projects/",
 					"method": "GET"
@@ -314,6 +328,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/projects/offset",
 					"method": "GET"
@@ -323,6 +338,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/projects/:id",
 					"method": "GET"
@@ -369,6 +385,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/health",
 					"method": "GET"
@@ -379,6 +396,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/gatus/endpoints",
 					"method": "GET"
@@ -389,6 +407,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 50,
 				"adminBypass": false,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/assets/opengraph/get",
 					"method": "GET"
@@ -398,6 +417,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/assets/proxy/:public_id",
 					"method": "GET"
@@ -407,6 +427,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/assets/proxy/:folder/:id",
 					"method": "GET"
@@ -416,6 +437,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 50,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/assets/proxy/:public_id/size/:w/:h",
 					"method": "GET"
@@ -427,6 +449,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/tags/",
 					"method": "GET"
@@ -436,6 +459,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/tags/:slug",
 					"method": "GET"
@@ -463,6 +487,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 200,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/sitemap.xml",
 					"method": "GET"
@@ -472,6 +497,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 200,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/robots.txt",
 					"method": "GET"
@@ -481,6 +507,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 200,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/ai.txt",
 					"method": "GET"
@@ -491,6 +518,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 10,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/guestbook/authorize/:id",
 					"method": "PUT"
@@ -500,6 +528,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 10,
 				"adminBypass": true,
+				"stopInRedisDown": true,
 				"match": {
 					"url": "/api/guestbook/unauthorize/:id",
 					"method": "PUT"
@@ -519,6 +548,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/api/blog/version/:slug",
 					"method": "GET"
@@ -538,6 +568,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/assets/images/proxy/:public_id",
 					"method": "GET"
@@ -547,6 +578,7 @@
 				"windowSeconds": 60,
 				"maxRequests": 100,
 				"adminBypass": true,
+				"stopInRedisDown": false,
 				"match": {
 					"url": "/assets/images/proxy/:folder/:id",
 					"method": "GET"

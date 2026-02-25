@@ -22,6 +22,7 @@ interface RouteConfig {
     windowSeconds?: number;
     maxRequests?: number;
     adminBypass?: boolean;
+    stopInRedisDown?: boolean;
 }
 
 interface RateConfig {
@@ -30,6 +31,7 @@ interface RateConfig {
         windowSeconds: number;
         maxRequests: number;
         adminBypass?: boolean;
+        stopInRedisDown?: boolean;
     };
     routes?: Record<string, RouteConfig>;
 }
@@ -39,6 +41,46 @@ interface LimitContext {
     windowSeconds: number;
     maxRequests: number;
     adminBypass: boolean;
+    stopInRedisDown: boolean;
+}
+
+type MemoryCounter = {
+    count: number;
+    expiresAt: number;
+};
+
+const memoryRateStore = new Map<string, MemoryCounter>();
+
+function checkInMemoryRateLimit(key: string, windowSeconds: number, maxRequests: number) {
+    const now = Date.now();
+    const current = memoryRateStore.get(key);
+
+    if (!current || current.expiresAt <= now) {
+        memoryRateStore.set(key, {
+            count: 1,
+            expiresAt: now + windowSeconds * 1000
+        });
+
+        return {
+            exceeded: false,
+            count: 1,
+            remaining: Math.max(0, maxRequests - 1),
+            retryAfter: windowSeconds
+        };
+    }
+
+    current.count += 1;
+    memoryRateStore.set(key, current);
+
+    const retryAfter = Math.max(1, Math.ceil((current.expiresAt - now) / 1000));
+    const remaining = Math.max(0, maxRequests - current.count);
+
+    return {
+        exceeded: current.count > maxRequests,
+        count: current.count,
+        remaining,
+        retryAfter
+    };
 }
 
 const rateConfig: RateConfig | null = (() => {
@@ -99,6 +141,7 @@ function getLimitsContext(req: Request): LimitContext {
         windowSeconds: parseInt(process.env.RATE_WINDOW_SECONDS || '60', 10),
         maxRequests: parseInt(process.env.RATE_MAX_REQUESTS || '5', 10),
         adminBypass: false,
+        stopInRedisDown: (req.method || 'GET').toUpperCase() !== 'GET',
     };
 
     const urlWithoutQuery = (req.originalUrl || req.url).split('?')[0];
@@ -122,7 +165,12 @@ function getLimitsContext(req: Request): LimitContext {
                             key: key,
                             windowSeconds: Number(routeCfg.windowSeconds ?? rateConfig.default?.windowSeconds ?? defaults.windowSeconds),
                             maxRequests: Number(routeCfg.maxRequests ?? rateConfig.default?.maxRequests ?? defaults.maxRequests),
-                            adminBypass: Boolean(routeCfg.adminBypass ?? rateConfig.default?.adminBypass ?? defaults.adminBypass)
+                            adminBypass: Boolean(routeCfg.adminBypass ?? rateConfig.default?.adminBypass ?? defaults.adminBypass),
+                            stopInRedisDown: Boolean(
+                                routeCfg.stopInRedisDown
+                                ?? rateConfig.default?.stopInRedisDown
+                                ?? defaults.stopInRedisDown
+                            )
                         };
                     }
                 } catch (err) {
@@ -140,6 +188,7 @@ function getLimitsContext(req: Request): LimitContext {
             windowSeconds: Number(rateConfig.default.windowSeconds ?? defaults.windowSeconds),
             maxRequests: Number(rateConfig.default.maxRequests ?? defaults.maxRequests),
             adminBypass: Boolean(rateConfig.default.adminBypass ?? false),
+            stopInRedisDown: Boolean(rateConfig.default.stopInRedisDown ?? defaults.stopInRedisDown),
         };
     }
 
@@ -162,19 +211,20 @@ export async function rateLimiter(req: Request, res: Response, next: NextFunctio
         const redis = RedisClient;
         const logger = consola.withTag('RateLimit');
         
-        if (!redis || !redis.isReady) {
-            logger.warn('Redis not connected, skipping.');
-            return next();
-        }
+        const { key: routeKey, windowSeconds, maxRequests, adminBypass, stopInRedisDown } = getLimitsContext(req);
 
-        const { key: routeKey, windowSeconds, maxRequests, adminBypass } = getLimitsContext(req);
+        const ip = (req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').toString();
+        const methodColors: Record<string, any> = {
+            'GET': chalk.green, 'POST': chalk.yellow, 'DELETE': chalk.red, 'PUT': chalk.blue
+        };
+        const styledMethod = (methodColors[req.method] || chalk.white)(req.method);
 
         if (adminBypass) {
             const authHeader = req.headers['authorization'];
             const token = authHeader && authHeader.split(' ')[1];
             if (token) {
                 try {
-                    const isRevoked = await AuthService.isTokenRevoked(token);
+                    const isRevoked = await AuthService.isTokenRevoked(token, { failOpen: true });
 
                     if (!isRevoked) {
                         const user = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string);
@@ -185,8 +235,49 @@ export async function rateLimiter(req: Request, res: Response, next: NextFunctio
                 } catch (error) {}
             }
         }
-        
-        const ip = (req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown').toString();
+
+        if (!redis || !redis.isReady) {
+            const strictMode = stopInRedisDown;
+
+            if (strictMode) {
+                logger.error(chalk.red('Redis unavailable: strict rate limit route blocked'), chalk.yellow(req.originalUrl || req.url));
+                writeToLog(`[RateLimit] Redis unavailable strict block route=${routeKey} method=${req.method}`, 'rateLimiter');
+                return res.status(503).json({
+                    success: false,
+                    message: 'Service temporarily unavailable (rate limiter backend).'
+                });
+            }
+
+            const memoryKey = `mem-rate:${routeKey}:${ip}`;
+            const memoryResult = checkInMemoryRateLimit(memoryKey, windowSeconds, maxRequests);
+
+            logger.log([
+                chalk.red.bold('MEMORY'),
+                `${chalk.gray('name=')}${chalk.cyan(routeKey)}`,
+                `${chalk.gray('method=')}${styledMethod}`,
+                `${chalk.gray('count=')}${chalk.white(memoryResult.count)}/${chalk.white(maxRequests)}`,
+                chalk.yellow('→'),
+                chalk.gray(`window=${windowSeconds}s`),
+                chalk.red('REDIS=DOWN'),
+                chalk.red('STORE=MEMORY-FALLBACK')
+            ].join(' '));
+
+            writeToLog(`[RateLimit] Redis unavailable fallback memory route=${routeKey} method=${req.method} count=${memoryResult.count}/${maxRequests}`, 'rateLimiter');
+
+            if (memoryResult.exceeded) {
+                return res.status(429).json({
+                    success: false,
+                    message: 'Too many requests, please retry later.',
+                    retryAfter: memoryResult.retryAfter
+                });
+            }
+
+            res.set('X-RateLimit-Limit', String(maxRequests));
+            res.set('X-RateLimit-Remaining', String(memoryResult.remaining));
+            res.set('X-RateLimit-Store', 'memory-fallback');
+            return next();
+        }
+
         const redisKey = `rate:${routeKey}:${ip}`;
 
         const current = await redis.incr(redisKey);
@@ -194,11 +285,6 @@ export async function rateLimiter(req: Request, res: Response, next: NextFunctio
         const isDefault = routeKey.startsWith('default:');
         const status = isDefault ? chalk.red.bold('unRegister') : chalk.green.bold('register');
         
-        const methodColors: Record<string, any> = {
-            'GET': chalk.green, 'POST': chalk.yellow, 'DELETE': chalk.red, 'PUT': chalk.blue
-        };
-        const styledMethod = (methodColors[req.method] || chalk.white)(req.method);
-
         logger.log([
             status,
             `${chalk.gray('name=')}${chalk.cyan(routeKey)}`,

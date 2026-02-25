@@ -31,9 +31,7 @@ export class AssetsService {
         folder: string = "blog",
         extension: string = ".png" 
     ): Promise<string | null> { 
-        if (!isRedisReady()) {
-            throw new Error("Redis client is not connected.");
-        }
+        const redisReady = isRedisReady();
 
         try {
             if (!fs.existsSync(AssetHelper.getAssetsDirectory())) {
@@ -42,9 +40,13 @@ export class AssetsService {
 
             const assetField = `${folder}:${id}`;
 
-            const currentCachedId = await hashGet(AUTHORIZED_REDIS_KEYS.ASSET_LIST, assetField);
-            if (currentCachedId) {
-                logConsole("INFO", "ASSETS_SERVICE", "INFO", "Asset already exists in cache", { existingFile: currentCachedId });
+            if (redisReady) {
+                const currentCachedId = await hashGet(AUTHORIZED_REDIS_KEYS.ASSET_LIST, assetField);
+                if (currentCachedId) {
+                    logConsole("INFO", "ASSETS_SERVICE", "INFO", "Asset already exists in cache", { existingFile: currentCachedId });
+                }
+            } else {
+                logConsole("WARN", "ASSETS_SERVICE", "INFO", "Redis down: skipping cache read/update for upload", { id, folder });
             }
 
             const { buffer: finalBuffer, extension: finalExtension } = await AssetHelper.convertToWebP(buffer, extension);
@@ -54,13 +56,15 @@ export class AssetsService {
             await fsPromises.writeFile(fullPath, finalBuffer);
             logConsole("INFO", "ASSETS_SERVICE", "OK", "File written to disk", { path: fullPath });
 
-            await hashSet(
-                AUTHORIZED_REDIS_KEYS.ASSET_LIST,
-                assetField,    
-                newPhysicalName 
-            );
+            if (redisReady) {
+                await hashSet(
+                    AUTHORIZED_REDIS_KEYS.ASSET_LIST,
+                    assetField,
+                    newPhysicalName
+                );
 
-            logConsole("INFO", "ASSETS_SERVICE", "OK", "Redis updated successfully");
+                logConsole("INFO", "ASSETS_SERVICE", "OK", "Redis updated successfully");
+            }
             return newPhysicalName;
 
         } catch (error: any) {

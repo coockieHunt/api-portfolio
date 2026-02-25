@@ -25,9 +25,12 @@ export class AuthService {
      * @param token - The token to verify
      * @returns Promise resolving to true if token is revoked, false otherwise
      */
-    static async isTokenRevoked(token: string): Promise<boolean> {
+    static async isTokenRevoked(token: string, options?: { failOpen?: boolean }): Promise<boolean> {
         if (!AuthHelper.isRedisReady()) {
-            return false;
+            if (options?.failOpen) {
+                return false;
+            }
+            throw new Error("Redis client is not connected.");
         }
 
         const key = AuthHelper.getTokenKey(token);
