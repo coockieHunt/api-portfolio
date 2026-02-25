@@ -5,8 +5,10 @@ import helmet from 'helmet';
 import chalk from 'chalk';
 import consola from 'consola';
 import cookieParser from 'cookie-parser';
+import { registerDeps, apiShutdown } from './manage';
 
 import Bree from 'bree';
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import cfg from './config/default';
@@ -170,16 +172,21 @@ async function startServer() {
         consola.success('SMTP Ready', chalk.dim(`(${process.env.MAIL_HOST})`));
 
         const CRON_SCHEDULE = process.env.FALLBACK_CACHE_CRON || '0 * * * *';
+        const breeRoot = join(__dirname, 'jobs');
+        const jobBaseName = 'FallbackCache.jobs';
+        const hasJsJob = existsSync(join(breeRoot, `${jobBaseName}.js`));
+        const hasTsJob = existsSync(join(breeRoot, `${jobBaseName}.ts`));
+        const useJsJob = hasJsJob || !hasTsJob;
 
         const bree = new Bree({
-            defaultExtension: process.env.NODE_ENV === 'production' ? 'js' : 'ts',
-            root: join(__dirname, 'jobs'),
+            defaultExtension: useJsJob ? 'js' : 'ts',
+            root: breeRoot,
             logger: false,
             worker: {
-                execArgv: process.env.NODE_ENV === 'production' ? [] : ['--import', 'tsx'],
+                execArgv: useJsJob ? [] : ['--import', 'tsx'],
                 env: process.env
             },
-            jobs: [{ name: 'FallbackCache.jobs', cron: CRON_SCHEDULE }]
+            jobs: [{ name: jobBaseName, cron: CRON_SCHEDULE }]
         });
 
         await bree.start();
@@ -194,49 +201,6 @@ async function startServer() {
             console.log(chalk.dim('────────────────────────────────────────────────────────────'));
         });
 
-        const connections = new Set<any>();
-
-        async function shutdown(signal: string) {
-            consola.warn(`[${signal}] shutdown...`);
-        
-            setTimeout(() => {
-                consola.error('Forced shutdown timeout');
-                process.exit(1);
-            }, 3000).unref();
-        
-            try {
-                for (const conn of connections) conn.destroy();
-        
-                await new Promise<void>(resolve => server.close(() => resolve()));
-                consola.success('HTTP server closed');
-        
-                await Promise.race([
-                    bree.stop(),
-                    new Promise(resolve => setTimeout(resolve, 1000))
-                ]);
-                consola.success('Bree stopped');
-        
-                if (redisClient.isOpen) {
-                    await redisClient.quit().catch(() => redisClient.disconnect());
-                }
-                consola.success('Redis closed');
-        
-                closeSqlite();
-                consola.success('SQLite closed');
-        
-                consola.success('Shutdown complete');
-        
-                process.exit(0);
-        
-            } catch (err) {
-                consola.error('Error during shutdown:', err);
-                process.exit(1);
-            }
-        }
-
-        process.on('SIGINT', () => shutdown('SIGINT'));  
-        process.on('SIGTERM', () => shutdown('SIGTERM')); 
-        process.once('SIGUSR2', () => shutdown('SIGUSR2')); 
 
         let StartBorder = "green"
         if (cfg.fallback.latency || cfg.fallback.sendError) {StartBorder = "yellow"}
@@ -256,11 +220,12 @@ async function startServer() {
             });
         });
 
-        server.on('connection', (conn) => {
-            connections.add(conn);
-            conn.on('close', () => connections.delete(conn));
-        });
+        
+        registerDeps(server, redisClient, bree);
 
+        process.on('SIGINT', () => apiShutdown('SIGINT'));  
+        process.on('SIGTERM', () => apiShutdown('SIGTERM')); 
+        process.once('SIGUSR2', () => apiShutdown('SIGUSR2')); 
     } catch (err: any) {
         consola.fatal('CRITICAL FAILURE DURING STARTUP');
         consola.error(err);

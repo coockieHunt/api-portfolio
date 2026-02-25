@@ -52,6 +52,7 @@ lib-cov/
 # --- ENVIRONMENT AND SECRETS ---
 .env
 .env.docker
+.env.docker.*
 .env.local
 .env.development.local
 .env.test.local

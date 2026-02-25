@@ -78,7 +78,12 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
  */
 export const HybridAuthenticateToken = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    let token = authHeader && authHeader.split(' ')[1];
+
+    if (!token && req.cookies?.token) {
+        token = req.cookies.token;
+    }
+
     const path = req.originalUrl || req.path;
     const prefix = chalk.cyan('[AUTH-HYBRID]');
 

@@ -10,7 +10,8 @@
     "start": "tsx app.ts",
     "kill-port": "fuser -k 3001/tcp || true",
     "dev": "npm run kill-port && nodemon --signal SIGTERM --watch . --ext ts,js,json --exec 'node --import tsx app.ts'",
-    "build": "tsup app.ts jobs/FallbackCache.jobs.ts --format esm --outDir dist"
+    "build": "tsup app.ts jobs/FallbackCache.jobs.ts --format esm --outDir dist",
+    "job:fallback": "node --import tsx ./jobs/FallbackCache.jobs.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",

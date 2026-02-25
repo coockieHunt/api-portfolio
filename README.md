@@ -33,6 +33,21 @@ Key settings
 - IP whitelist: `IP_WHITELIST` (comma-separated).
 - CORS: `CORS_ORIGINS` (comma-separated).
 
+### Env file strategy
+
+Use separate env files by runtime target:
+
+- `api-mail/.env` → standalone local dev (`npm run dev`)
+- `api-mail/.env.docker.local` → Docker local profile (`docker-compose.local.yml`)
+- `api-mail/.env.docker.prod` → Docker production profile (`docker-compose.prod.yml`)
+
+Cookie auth is also profile-specific:
+
+- local: `AUTH_COOKIE_SECURE=false`, `AUTH_COOKIE_SAMESITE=lax`
+- prod: `AUTH_COOKIE_SECURE=true`, `AUTH_COOKIE_SAMESITE=none`, `AUTH_COOKIE_DOMAIN=.your-domain.tld`
+
+With Docker, use the matching compose file so the correct env is loaded automatically.
+
 ## Installation
 ```bash
 npm install

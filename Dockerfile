@@ -1,5 +1,6 @@
 # NODE STAGE (build)
-FROM node:25-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
+
 
 RUN apt update && apt upgrade -y \
     && npm install -g npm@latest
@@ -13,7 +14,7 @@ COPY . .
 RUN npm run build
 
 # NODE STAGE (runtime)
-FROM node:25-bookworm-slim AS runtime
+FROM node:24-bookworm-slim AS runtime
 
 RUN apt update && apt upgrade -y \
     && npm install -g npm@latest
@@ -25,6 +26,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/drizzle ./drizzle
 
 EXPOSE 3001
 ENV NODE_ENV=production

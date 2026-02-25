@@ -4,6 +4,7 @@ import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AuthError } from '../../utils/AppError.ts';
+import { AuthHelper } from '../../services/auth/Auth.helper.ts';
 
 class AuthController {
     async login(req: Request, res: Response) {
@@ -21,12 +22,7 @@ class AuthController {
         );
 
         const tokenTTL = Number(process.env.TOKEN_TTL_REVOCATION) || 86400;
-        res.cookie('token', tokenSign, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', 
-            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-            maxAge: tokenTTL * 1000 // TTL  ms
-        });
+        res.cookie('token', tokenSign, AuthHelper.buildAuthCookieOptions(tokenTTL * 1000));
 
         logConsole("POST", "/auth/login", "OK", "User logged in successfully");
         writeToLog("Login successful", "auth");
@@ -67,11 +63,7 @@ class AuthController {
         }
 
         await AuthService.revokeToken(usedToken);
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-        });
+        res.clearCookie('token', AuthHelper.buildAuthCookieOptions());
         logConsole("POST", "/auth/logout", "OK", "Token revoked successfully", { token: usedToken });
         writeToLog("Logout successful", "auth");
         return res.success({}, 'Logout successful');

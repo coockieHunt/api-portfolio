@@ -3,6 +3,43 @@ import { AUTHORIZED_REDIS_PREFIXES } from '../../constants/redis.constant.ts';
 import { validateKey } from '../../utils/redis.helper.ts';
 
 export class AuthHelper {
+    static parseBoolean(value: string | undefined, defaultValue: boolean): boolean {
+        if (typeof value !== 'string') return defaultValue;
+        return value.toLowerCase() === 'true';
+    }
+
+    static parseSameSite(
+        value: string | undefined,
+        defaultValue: 'lax' | 'strict' | 'none'
+    ): 'lax' | 'strict' | 'none' {
+        if (!value) return defaultValue;
+        const normalized = value.toLowerCase();
+        if (normalized === 'lax' || normalized === 'strict' || normalized === 'none') {
+            return normalized;
+        }
+        return defaultValue;
+    }
+
+    static buildAuthCookieOptions(maxAge?: number) {
+        const isProduction = process.env.NODE_ENV === 'production';
+        const secure = this.parseBoolean(process.env.AUTH_COOKIE_SECURE, isProduction);
+        const sameSite = this.parseSameSite(
+            process.env.AUTH_COOKIE_SAMESITE,
+            isProduction ? 'strict' : 'lax'
+        );
+        const domain = process.env.AUTH_COOKIE_DOMAIN || undefined;
+        const path = process.env.AUTH_COOKIE_PATH || '/';
+
+        return {
+            httpOnly: true,
+            secure,
+            sameSite,
+            domain,
+            path,
+            ...(typeof maxAge === 'number' ? { maxAge } : {})
+        } as const;
+    }
+
     /**
      * Generates the Redis key for a given token
      * @param token - The authentication token
