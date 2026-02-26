@@ -4,6 +4,8 @@ yarn-error.log
 .git
 .gitignore
 .DS_Store
-logs
+/logs
 *.db
-assets
+/assets
+!/routes/assets/**
+!/routes/logs/**
