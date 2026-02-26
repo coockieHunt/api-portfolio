@@ -77,7 +77,7 @@ pids
 .dynamodb/
 
 # --- PROJECT SPECIFIC ---
-assets/
+/assets/
 default.json
 fallback-dev
 fallback-cache/
