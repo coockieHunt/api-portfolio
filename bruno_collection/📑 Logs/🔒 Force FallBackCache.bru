@@ -1,0 +1,87 @@
+meta {
+  name: 🔒 Force FallBackCache
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}{{endPointApi}}/logs/fallback/force/
+  body: none
+  auth: inherit
+}
+
+tests {
+  test("Status code is 200 or 409", function() {
+    expect([200, 409]).to.include(res.getStatus());
+  });
+  
+  test("Response success/message are coherent", function() {
+    const body = res.getBody();
+    if (res.getStatus() === 200) {
+      expect(body.success).to.be.true;
+      expect(body.data).to.be.an('object');
+      expect(body.data).to.have.property('message');
+      expect(body.data.message).to.equal('manual cache refresh started');
+      return;
+    }
+
+    expect(body.success).to.be.false;
+    expect(body.message).to.equal('job already running');
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # Force Fallback Cache Refresh
+  
+  **Description:**
+  Déclenche manuellement le job de génération du fallback cache via Bree.
+  
+  ---
+  
+  ### Request
+  
+  **Method:** `POST`
+  **URL:** `{{base_url}}{{endPointApi}}/logs/fallback/force/`
+  
+  **Authentication:** Required (JWT cookie/token)
+  
+  ---
+  
+  ### Response (200)
+  
+  ```json
+  {
+    "success": true,
+    "message": "Success",
+    "data": {
+      "message": "manual cache refresh started"
+    },
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+
+  ### Response (409)
+
+  ```json
+  {
+    "success": false,
+    "message": "job already running",
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+
+  ### Response (500)
+
+  ```json
+  {
+    "success": false,
+    "message": "error during fallback cache build",
+    "timestamp": "2026-02-19T10:30:00.000Z"
+  }
+  ```
+}

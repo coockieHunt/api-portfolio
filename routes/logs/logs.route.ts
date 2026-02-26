@@ -30,10 +30,20 @@ LogsRoute.get(
     authenticateToken,
     rateLimiter,
     validateRequest,
-    LogsValidator.GetFallBackList,
+    LogsValidator.GetFallBackView,
     asyncHandler(new LogsController().GetInfoByFilename),
     responseHandler
 );
 
+LogsRoute.post(
+    '/fallback/force',
+    allowOnlyFromIPs,
+    authenticateToken,
+    rateLimiter,
+    validateRequest,
+    LogsValidator.PostFallBackForce,
+    asyncHandler(new LogsController().PostFallBackForce),
+    responseHandler
+)
 
 export default LogsRoute;

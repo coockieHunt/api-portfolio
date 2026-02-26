@@ -41,6 +41,8 @@ import LogsRoute from './routes/logs/logs.route';
 import OpenGraphRouter from './routes/proxy/ogImage.route';
 import AssetsProxyRoute from './routes/proxy/assetsProxy.route';
 
+export let bree: Bree; 
+
 process.on('uncaughtException', (err) => {
     console.error('Uncaught Exception:', err);
     process.exit(1);
@@ -188,7 +190,7 @@ async function startServer() {
         const hasTsJob = existsSync(join(breeRoot, `${jobBaseName}.ts`));
         const useJsJob = hasJsJob || !hasTsJob;
 
-        const bree = new Bree({
+        bree = new Bree({
             defaultExtension: useJsJob ? 'js' : 'ts',
             root: breeRoot,
             logger: false,

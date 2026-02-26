@@ -17,7 +17,8 @@
 			"ogimage": "ogimage.log",
 			"tags": "tags.log",
 			"assets": "assets.log",
-			"projects": "projects.log"
+			"projects": "projects.log",
+			"logs": "logs.log"
 		}
 	},
 
