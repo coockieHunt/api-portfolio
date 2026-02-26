@@ -5,6 +5,7 @@ import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts'
 import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
 import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 import { authenticateToken, HybridAuthenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { allowOnlyFromIPs } from '../../middlewares/whiteList.middlewar.ts';
 
 import ProjectsController from './projects.controller.ts';
 import { ProjectsValidator } from './projects.validator.ts';
@@ -54,6 +55,7 @@ ProjectRoute.get(
 
 ProjectRoute.post(
     "/",
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     responseHandler,
@@ -65,6 +67,7 @@ ProjectRoute.post(
 
 ProjectRoute.put(
     "/:id",
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     responseHandler,
@@ -76,6 +79,7 @@ ProjectRoute.put(
 
 ProjectRoute.put(
     "/edit/publish/:id",
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     responseHandler,
@@ -86,6 +90,7 @@ ProjectRoute.put(
 
 ProjectRoute.delete(
     "/:id",
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     responseHandler,

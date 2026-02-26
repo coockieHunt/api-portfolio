@@ -8,12 +8,14 @@ import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts'
 import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
 import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 import { authenticateToken} from '../../middlewares/authenticateToken.middlewar.ts';
+import { allowOnlyFromIPs } from '../../middlewares/whiteList.middlewar.ts';
 
 
 const LogsRoute: Router = express.Router({ mergeParams: true });
 
 LogsRoute.get(
     '/fallback/list',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     validateRequest,
@@ -24,6 +26,7 @@ LogsRoute.get(
 
 LogsRoute.get(
     '/fallback/view/',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     validateRequest,

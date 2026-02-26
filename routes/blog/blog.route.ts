@@ -7,6 +7,7 @@ import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
 import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
 import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
 import { authenticateToken, HybridAuthenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { allowOnlyFromIPs } from '../../middlewares/whiteList.middlewar.ts';
 import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const BlogRoute: Router = express.Router({ mergeParams: true });
@@ -60,6 +61,7 @@ responseHandler);
  *  @param res Express Response object
  */
 BlogRoute.post('/new',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     BlogValidator.create,
@@ -74,6 +76,7 @@ responseHandler);
  *  @param res Express Response object
  */
 BlogRoute.put('/edit/update/:slug',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     BlogValidator.update,
@@ -88,6 +91,7 @@ responseHandler);
  *  @param res Express Response object
  */
 BlogRoute.put('/edit/publish/:slug',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     BlogValidator.updatePublish,
@@ -102,6 +106,7 @@ responseHandler);
  *  @param res Express Response object
  */
 BlogRoute.put('/edit/indexed/:slug',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     BlogValidator.updateIndexed,
@@ -116,6 +121,7 @@ responseHandler);
  *  @param res Express Response object
  */
 BlogRoute.delete('/:slug',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     BlogValidator.delete,
@@ -130,6 +136,7 @@ responseHandler);
  *  @param res Express Response object
  */
 BlogRoute.delete('/cache/delete/:slug',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     BlogValidator.delete,
@@ -144,6 +151,7 @@ responseHandler);
 * @param res Express Response object
 */
 BlogRoute.delete('/cache/clear/',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     asyncHandler(BlogController.CacheClearAll),
@@ -167,6 +175,7 @@ responseHandler);
  *  @param res Express Response object
  */
 BlogRoute.put('/version/:slug/update',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     BlogValidator.getBySlug,

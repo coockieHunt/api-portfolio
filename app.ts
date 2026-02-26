@@ -124,15 +124,15 @@ app.use(cookieParser());
 app.use(trackApiCall);
 app.use(responseHandler);
 
-app.use(`${API_ROOT}/mail`, allowOnlyFromIPs, MailRoute);
-app.use(`${API_ROOT}/guestbook`, allowOnlyFromIPs, GuestBookRoute);
-app.use(`${API_ROOT}/blog`, allowOnlyFromIPs, BlogRoute);
-app.use(`${API_ROOT}/auth`, allowOnlyFromIPs, AuthRoute);
-app.use(`${API_ROOT}/tags`, allowOnlyFromIPs, TagsRoute);
-app.use(`${API_ROOT}/authors`, allowOnlyFromIPs, AuthorsRoute);
-app.use(`${API_ROOT}/assets`, allowOnlyFromIPs, AssetsRoute);
-app.use(`${API_ROOT}/projects`, allowOnlyFromIPs, ProjectRoute);
-app.use(`${API_ROOT}/logs`, allowOnlyFromIPs, LogsRoute);
+app.use(`${API_ROOT}/mail`, MailRoute);
+app.use(`${API_ROOT}/guestbook`, GuestBookRoute);
+app.use(`${API_ROOT}/blog`, BlogRoute);
+app.use(`${API_ROOT}/auth`, AuthRoute);
+app.use(`${API_ROOT}/tags`, TagsRoute);
+app.use(`${API_ROOT}/authors`, AuthorsRoute);
+app.use(`${API_ROOT}/assets`, AssetsRoute);
+app.use(`${API_ROOT}/projects`, ProjectRoute);
+app.use(`${API_ROOT}/logs`, LogsRoute);
 
 app.use(`${API_ROOT}/counter`, CounterRoute);
 app.use(`${API_ROOT}/health`, HealthRoute);
@@ -141,8 +141,8 @@ app.use(`${API_ROOT}/gatus`, GatusRoute);
 app.use(`${API_ROOT}/`, RouteMap);
 
 
-app.use(`${ASSET_ROOT}/opengraph`, allowOnlyFromIPs, OpenGraphRouter);
-app.use(`${ASSET_ROOT}/images`, allowOnlyFromIPs, AssetsProxyRoute);
+app.use(`${ASSET_ROOT}/opengraph`, OpenGraphRouter);
+app.use(`${ASSET_ROOT}/images`, AssetsProxyRoute);
 
 app.use((req, res, next) => {
     console.log(chalk.red(`[Routeur]`), "404 not found", chalk.gray(" → " + req.originalUrl));

@@ -6,6 +6,7 @@ import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
 import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
 import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
 import { authenticateToken,  HybridAuthenticateToken} from '../../middlewares/authenticateToken.middlewar.ts';
+import { allowOnlyFromIPs } from '../../middlewares/whiteList.middlewar.ts';
 import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const TagsRoute: Router = express.Router({ mergeParams: true });
@@ -47,6 +48,7 @@ TagsRoute.get('/:slug',
  * @param res Express Response object
  */
 TagsRoute.delete('/:slug',
+	allowOnlyFromIPs,
 	rateLimiter,
 	authenticateToken,
 	TagsValidator.delete,
@@ -62,6 +64,7 @@ TagsRoute.delete('/:slug',
  * @param res Express Response object
  */
 TagsRoute.post('/',
+	allowOnlyFromIPs,
 	rateLimiter,
 	authenticateToken,
 	TagsValidator.create,
@@ -77,6 +80,7 @@ TagsRoute.post('/',
  * @param res Express Response object
  */
 TagsRoute.put('/:slug',
+	allowOnlyFromIPs,
 	rateLimiter,
 	authenticateToken,
 	TagsValidator.update,

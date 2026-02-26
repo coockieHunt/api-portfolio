@@ -3,6 +3,7 @@ import multer from 'multer';
 import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
 import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
 import { authenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { allowOnlyFromIPs } from '../../middlewares/whiteList.middlewar.ts';
 import AssetsController from './assets.controller.ts';
 import { AssetsValidator } from './assets.validator.ts';
 
@@ -13,6 +14,7 @@ const upload = multer({
 });
 
 AssetsRoute.post('/upload/',
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     upload.single('file'),
@@ -22,6 +24,7 @@ AssetsRoute.post('/upload/',
 );
 
 AssetsRoute.delete('/delete/:folder/:id',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     AssetsValidator.delete,
@@ -30,6 +33,7 @@ AssetsRoute.delete('/delete/:folder/:id',
 );
 
 AssetsRoute.delete('/cache/clear/:id',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     AssetsValidator.clearCache,
@@ -38,12 +42,14 @@ AssetsRoute.delete('/cache/clear/:id',
 );
 
 AssetsRoute.delete('/cache/all',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     AssetsController.clearAllCache
 );
 
 AssetsRoute.get('/list',
+    allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
     AssetsController.list

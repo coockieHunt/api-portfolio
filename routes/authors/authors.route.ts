@@ -5,6 +5,7 @@ import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
 import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
 import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
 import { authenticateToken } from '../../middlewares/authenticateToken.middlewar.ts';
+import { allowOnlyFromIPs } from '../../middlewares/whiteList.middlewar.ts';
 import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const AuthorsRoute: Router = express.Router({ mergeParams: true });
@@ -47,6 +48,7 @@ AuthorsRoute.get(
  */
 AuthorsRoute.post(
     '/',
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     AuthorsValidator.create,
@@ -63,6 +65,7 @@ AuthorsRoute.post(
  */
 AuthorsRoute.put(
     '/:id',
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     AuthorsValidator.update,
@@ -79,6 +82,7 @@ AuthorsRoute.put(
  */
 AuthorsRoute.delete(
     '/:id',
+    allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     AuthorsValidator.delete,

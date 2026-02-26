@@ -5,6 +5,7 @@ import { rateLimiter } from '../../middlewares/rateLimiter.middlewar.ts';
 import { responseHandler } from '../../middlewares/responseHandler.middlewar.ts';
 import { validateRequest } from '../../middlewares/validateRequest.middleware.ts';
 import { authenticateToken,  HybridAuthenticateToken} from '../../middlewares/authenticateToken.middlewar.ts';
+import { allowOnlyFromIPs } from '../../middlewares/whiteList.middlewar.ts';
 import { asyncHandler } from '../../middlewares/errorHandler.middleware.ts';
 
 const GuestBookRoute: Router = express.Router({ mergeParams: true });
@@ -30,6 +31,7 @@ GuestBookRoute.get('/',
  *  @param res Express Response object
  */
 GuestBookRoute.put('/authorize/:id',
+	allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     GuestBookValidator.authorize,
@@ -39,6 +41,7 @@ GuestBookRoute.put('/authorize/:id',
 );
 
 GuestBookRoute.put('/unauthorize/:id',
+	allowOnlyFromIPs,
     rateLimiter,
     authenticateToken,
     GuestBookValidator.unauthorize,
@@ -68,6 +71,7 @@ GuestBookRoute.post('/',
  *  @param res Express Response object
  */
 GuestBookRoute.delete('/:id',
+	allowOnlyFromIPs,
 	rateLimiter,
 	authenticateToken,
 	GuestBookValidator.delete,
