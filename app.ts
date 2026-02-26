@@ -58,7 +58,17 @@ const ASSET_ROOT = cfg.AssetRoot;
 const app = express();
 const PORT = cfg.port || 3000;
 
-app.set('trust proxy', 1);
+const trustProxyRaw = process.env.TRUST_PROXY;
+if (typeof trustProxyRaw === 'undefined' || trustProxyRaw === '') {
+    app.set('trust proxy', 1);
+} else {
+    const parsedTrustProxy =
+        trustProxyRaw === 'true' ? true :
+        trustProxyRaw === 'false' ? false :
+        Number.isNaN(Number(trustProxyRaw)) ? trustProxyRaw : Number(trustProxyRaw);
+    app.set('trust proxy', parsedTrustProxy as any);
+}
+
 const corsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         if (!origin) return callback(null, true);
@@ -146,7 +156,7 @@ app.use((req, res, next) => {
 app.use(errorHandler);
 
 async function startServer() {
-    const requiredEnvVars = ['ACCESS_TOKEN_SECRET'];
+    const requiredEnvVars = ['ACCESS_TOKEN_SECRET', 'ADMIN_PASSWORD_HASH'];
     const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
 
     if (missingEnvVars.length > 0) {

@@ -24,9 +24,12 @@ class AuthController {
         const tokenTTL = Number(process.env.TOKEN_TTL_REVOCATION) || 86400;
         res.cookie('token', tokenSign, AuthHelper.buildAuthCookieOptions(tokenTTL * 1000));
 
+        const isProduction = process.env.NODE_ENV === 'production';
+        const responseData = isProduction ? {} : { token: tokenSign };
+
         logConsole("POST", "/auth/login", "OK", "User logged in successfully");
         writeToLog("Login successful", "auth");
-        return res.success({ token: tokenSign }, 'Login successful');
+        return res.success(responseData, 'Login successful');
     }
 
     async me(req: Request, res: Response) {

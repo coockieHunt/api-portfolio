@@ -27,6 +27,20 @@ export class AuthHelper {
             process.env.AUTH_COOKIE_SAMESITE,
             isProduction ? 'strict' : 'lax'
         );
+        const allowCrossSite = this.parseBoolean(process.env.AUTH_COOKIE_ALLOW_CROSS_SITE, false);
+
+        if (sameSite === 'none' && !secure) {
+            throw new Error('Invalid cookie policy: SameSite=None requires Secure=true');
+        }
+
+        if (isProduction && !secure) {
+            throw new Error('Invalid cookie policy: production requires AUTH_COOKIE_SECURE=true');
+        }
+
+        if (isProduction && sameSite === 'none' && !allowCrossSite) {
+            throw new Error('Invalid cookie policy: SameSite=None is blocked in production unless AUTH_COOKIE_ALLOW_CROSS_SITE=true');
+        }
+
         const domain = process.env.AUTH_COOKIE_DOMAIN || undefined;
         const path = process.env.AUTH_COOKIE_PATH || '/';
 
