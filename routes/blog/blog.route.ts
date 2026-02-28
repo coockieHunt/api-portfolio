@@ -35,10 +35,27 @@ BlogRoute.get('/all',
  */
 BlogRoute.get('/offset', 
     rateLimiter,
+    HybridAuthenticateToken,
     BlogValidator.getOffset,
     validateRequest,
     asyncHandler(BlogController.getOffset),
 responseHandler);
+
+
+/**
+ * GET /tags - Get tags and their count for filtered posts
+ * Retrieve tags and their count based on current filters (for filter sidebar, etc)
+ *  @param req Express Request object
+ *  @param res Express Response object
+ */
+BlogRoute.get('/tags',
+    rateLimiter,
+    HybridAuthenticateToken,
+    BlogValidator.getAll,
+    validateRequest,
+    asyncHandler(BlogController.getTags),
+    responseHandler
+);
 
 /**
  * GET /:slug - Get blog post by slug

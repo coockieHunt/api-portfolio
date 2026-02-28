@@ -1,0 +1,96 @@
+meta {
+  name: Get Tags (Filtered)
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}{{endPointApi}}/blog/tags?titleContains=&tagsContains=
+  body: none
+  auth: inherit
+}
+
+params:query {
+  titleContains: 
+  tagsContains: 
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Response success is true", function() {
+    const body = res.getBody();
+    expect(body.success).to.be.true;
+  });
+
+  test("Response has tags array", function() {
+    const body = res.getBody();
+    expect(body.data).to.exist;
+    expect(body.data.tags).to.be.an('array');
+  });
+
+  test("Tag count payload shape is valid", function() {
+    const body = res.getBody();
+    const tags = body.data.tags;
+
+    if (tags.length > 0) {
+      const first = tags[0];
+      expect(first).to.have.property('tag');
+      expect(first).to.have.property('count');
+    }
+  });
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
+
+docs {
+  # 🏷️ Get Filtered Tags with Counts
+
+  **Description:**
+  Returns blog tags and their counts based on the same active filters as blog listing.
+
+  ---
+
+  ### 📥 Request (Input)
+
+  **Method:** `GET`
+  **URL:** `{{base_url}}{{endPointApi}}/blog/tags`
+
+  **Authentication:**
+  * Optional (hybrid auth). Guests receive public counts.
+
+  **Query Parameters:**
+  | Param | Type | Required | Description |
+  | :--- | :--- | :---: | :--- |
+  | `titleContains` | String | ❌ | Filter by post title substring |
+  | `tagsContains` | String | ❌ | Filter by tag slug(s), comma-separated |
+
+  ---
+
+  ### 📤 Response (Output)
+
+  **Success Example (200 OK):**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "tags": [
+        {
+          "tag": {
+            "id": 1,
+            "name": "React",
+            "slug": "react",
+            "color": "#61dafb"
+          },
+          "count": 4
+        }
+      ]
+    }
+  }
+  ```
+}

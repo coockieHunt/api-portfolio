@@ -28,6 +28,52 @@ import { NotFoundError, ValidationError } from '../../utils/AppError.ts';
 import {BlogHelper} from './Blog.helper.ts';
 
 export class BlogService {
+    static async getTagsWithCount({ tagsContains = [], titleContains = '', isAuthenticated = false }: { tagsContains?: string[], titleContains?: string, isAuthenticated?: boolean }) {
+        const filters = [];
+        if (!isAuthenticated) {
+            filters.push(eq(posts.indexed, 1), eq(posts.published, 1));
+        }
+        if (titleContains) {
+            filters.push(like(posts.title, `%${titleContains}%`));
+        }
+        if (tagsContains.length > 0) {
+            const postsWithTagsSubquery = db
+                .select({ postId: postTags.postId })
+                .from(postTags)
+                .innerJoin(tags, eq(postTags.tagId, tags.id))
+                .where(inArray(tags.slug, tagsContains));
+            filters.push(inArray(posts.id, postsWithTagsSubquery));
+        }
+        const filteredPostIds = await db
+            .select({ id: posts.id })
+            .from(posts)
+            .where(and(...filters))
+            .all();
+        const postIds = filteredPostIds.map(p => p.id);
+
+        const allTags = await db.select().from(tags).all();
+
+        let tagsCount: Array<{ tag: typeof tags.$inferSelect, count: number }> = [];
+        if (postIds.length > 0) {
+            const counted = await db
+                .select({
+                    tag: tags,
+                    count: sql<number>`count(*)`
+                })
+                .from(postTags)
+                .innerJoin(tags, eq(postTags.tagId, tags.id))
+                .where(inArray(postTags.postId, postIds))
+                .groupBy(tags.id)
+                .all();
+            tagsCount = allTags.map(tag => {
+                const found = counted.find(t => t.tag.id === tag.id);
+                return { tag, count: found ? found.count : 0 };
+            });
+        } else {
+            tagsCount = allTags.map(tag => ({ tag, count: 0 }));
+        }
+        return { tags: tagsCount };
+    }
     /**
      * Retrieves all blog posts with pagination
      * @param page - Page number (default: 1)
@@ -37,7 +83,9 @@ export class BlogService {
     static async getAllPosts(page: number = 1, limit: number = 20, isAuthenticated: boolean = false) {
         const offset = (page - 1) * limit;
 
-        const visibilityFilter = isAuthenticated ? undefined : eq(posts.published, 1);
+        const visibilityFilter = isAuthenticated
+            ? undefined
+            : and(eq(posts.published, 1), eq(posts.indexed, 1));
 
         const totalCountResult = await db
             .select({ count: sql<number>`count(*)` })
@@ -105,11 +153,16 @@ export class BlogService {
         max: number = 100, 
         tagsToFilter: string[] = [],
         titleContains: string = '',
-        onlyPublished: boolean = true
+        onlyPublished: boolean = true,
+        onlyIndexed: boolean = true
     ) {
         const limit = max - min + 1;
         const offset = min - 1;
         const filters = [];
+
+        if (onlyIndexed) {
+            filters.push(eq(posts.indexed, 1));
+        }
     
         if (titleContains) {
             filters.push(like(posts.title, `%${titleContains}%`)); 
@@ -125,6 +178,18 @@ export class BlogService {
             filters.push(inArray(posts.id, postsWithTagsSubquery));
         }
     
+        const totalCountResult = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(posts)
+            .where(
+                and(
+                    ...filters, 
+                    onlyPublished ? eq(posts.published, 1) : undefined 
+                )
+            )
+            .get();
+        const totalCount = totalCountResult ? totalCountResult.count : 0;
+
         const postsResults = await db
             .select({
                 post: posts,
@@ -144,7 +209,7 @@ export class BlogService {
             .limit(limit)
             .offset(offset)
             .all();
-        
+
         let tagsResults: Array<{ postId: number, tag: typeof tags.$inferSelect }> = [];
 
         if (postsResults.length > 0) {
@@ -158,17 +223,18 @@ export class BlogService {
             .where(inArray(postTags.postId, postIds))
             .all();
         }
-    
+
         const results = postsResults.map(postResult => ({
             ...postResult,
             tags: tagsResults.filter(t => t.postId === postResult.post.id).map(t => t.tag)
         }));
-    
+
         return {
             meta: {
                 cursor_start: min,
                 cursor_end: min + results.length,
-                requested_limit: limit
+                requested_limit: limit,
+                total_count: totalCount
             },
             posts: results
         };
@@ -390,7 +456,10 @@ export class BlogService {
         validateKey(key);
 
         const updatedPost =  await db.update(posts)
-            .set({ indexed: indexed, editedAt: new Date() })
+            .set({
+                indexed: indexed,
+                editedAt: new Date()
+            })
             .where(eq(posts.slug, slug))
             .returning()
             .get();

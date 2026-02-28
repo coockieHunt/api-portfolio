@@ -65,10 +65,12 @@ Default base URL: `http://localhost:3001/api`.
 - **Blog**:
   - `GET /api/blog/all?page=&limit=`
   - `GET /api/blog/offset?min=&max=&tagsContains=&titleContains=`
+  - `GET /api/blog/tags?tagsContains=&titleContains=`
   - `GET /api/blog/:slug` (drafts 404 for guests; no cache for drafts)
   - `POST /api/blog/new`
   - `PUT /api/blog/edit/update/:slug`
   - `PUT /api/blog/edit/publish/:slug`
+  - `PUT /api/blog/edit/indexed/:slug`
   - `DELETE /api/blog/:slug`
   - Cache: `DELETE /api/blog/cache/delete/:slug`, `DELETE /api/blog/cache/clear/`
 - **Tags**: `GET /api/tags/`, `GET /api/tags/:slug`, `POST /api/tags/`, `DELETE /api/tags/:slug`

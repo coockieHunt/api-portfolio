@@ -5,14 +5,14 @@ meta {
 }
 
 put {
-  url: {{base_url}}{{endPointApi}}/blog/edit/publish/{{slugBlog_demoName}}
+  url: {{base_url}}{{endPointApi}}/blog/edit/indexed/{{slugBlog_demoName}}
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "publish": true
+    "indexed": 1
   }
 }
 
@@ -30,10 +30,10 @@ tests {
       expect(body.message).to.include("updated successfully");
     });
   
-    test("Publish status is updated", function() {
+    test("Indexed status is updated", function() {
       const body = res.getBody();
       const post = body.data.post;
-      expect(post).to.have.property('published');
+      expect(post).to.have.property('indexed');
     });
   }
   
@@ -51,10 +51,10 @@ settings {
 }
 
 docs {
-  # 🔒 📤 Publish/Unpublish Post
+  # 🔒 👁️ Set Indexed Visibility
   
   **Description:**
-  Updates the publication status of a blog post (publish/unpublish).
+  Updates the indexed visibility of a blog post.
   
   ⚠️ **Restriction:** This endpoint requires authentication.
   
@@ -63,7 +63,7 @@ docs {
   ### 📥 Request (Input)
   
   **Method:** `PUT`
-  **URL:** `{{base_url}}{{endPointApi}}/blog/edit/publish/:slug`
+  **URL:** `{{base_url}}{{endPointApi}}/blog/edit/indexed/:slug`
   
   **Authentication:**
   * 🔒 **Required**: `Authorization` Header (Bearer Token)
@@ -71,7 +71,7 @@ docs {
   **URL Parameters:**
   | Param | Type | Required | Description |
   | :--- | :--- | :---: | :--- |
-  | `slug` | String | ✔️ | Post slug to publish/unpublish |
+  | `slug` | String | ✔️ | Post slug to update visibility |
   
   **Query Parameters:**
   * None
@@ -79,12 +79,12 @@ docs {
   **Body Parameters:**
   | Param | Type | Required | Description |
   | :--- | :--- | :---: | :--- |
-  | `publish` | Boolean | ✔️ | True to publish, false to unpublish |
+  | `indexed` | Integer | ✔️ | `1` visible in index, `0` hidden from index |
   
   **Body Example:**
   ```json
   {
-    "publish": true
+    "indexed": 1
   }
   ```
   
@@ -96,16 +96,16 @@ docs {
   ```json
   {
     "success": true,
-    "message": "post (slug) publish status updated successfully",
+    "message": "post (slug) indexed status updated successfully",
     "data": {
-      "message": "post (slug) publish status updated successfully",
+      "message": "post (slug) indexed status updated successfully",
       "post": {
         "id": 72,
         "title": "Blog Title",
         "slug": "slug",
         "content": "Post content...",
         "summary": "Summary",
-        "published": 1,
+        "indexed": 1,
         "createdAt": "2026-01-19T10:30:00.000Z",
         "editedAt": "2026-01-19T18:39:21.316Z",
         "authorId": 1
@@ -135,8 +135,7 @@ docs {
   
   ### Notes
   
-  - Published posts are visible in listings
-  - Unpublished posts are hidden from public view
+  - Controls indexed visibility independently from publication status
   - Requires admin authentication
   - Visibility toggle only
 }

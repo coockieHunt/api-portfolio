@@ -3,7 +3,28 @@ import { BlogService } from '../../services/blog/Blog.service.ts';
 import type {Request, Response} from 'express';
 import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
 
+       
+
 class BlogController {
+    async getTags(req: Request, res: Response) {
+        try {
+            const isAuthenticated = !!(req as any).user;
+            const tagsQuery = req.query.tagsContains as string;
+            const tagsContains = tagsQuery ? tagsQuery.split(',').map((tag: string) => tag.trim()) : [];
+            const titleContains = req.query.titleContains ? (req.query.titleContains as string) : '';
+
+            const data = await BlogService.getTagsWithCount({
+                tagsContains,
+                titleContains,
+                isAuthenticated,
+            });
+
+            return res.success(data);
+        } catch (error) {
+            return res.error("error retrieving tags", 500, error);
+        }
+    }
+
     async getAll(req: Request, res: Response) {
         try {
             const page = req.query.page ? parseInt(req.query.page as string) : 1;
@@ -25,13 +46,21 @@ class BlogController {
         try {
             const min = req.query.min ? parseInt(req.query.min as string) : 1;
             const max = req.query.max ? parseInt(req.query.max as string) : 100;
+            const isAuthenticated = !!(req as any).user;
 
             const tagsQuery = req.query.tagsContains as string;
             const tagsContains = tagsQuery ? tagsQuery.split(',').map((tag: string) => tag.trim()) : [];
             
             const titleContains = req.query.titleContains ? (req.query.titleContains as string) : '';
 
-            const data = await BlogService.getPostOffset(min, max, tagsContains, titleContains);
+            const data = await BlogService.getPostOffset(
+                min,
+                max,
+                tagsContains,
+                titleContains,
+                !isAuthenticated,
+                !isAuthenticated
+            );
             
             logConsole('GET', '/blog/offset', 'INFO', `Retrieved blog posts with offset`, { count: data.posts.length, min, max, tagsContains, titleContains });
             writeToLog(`BlogRoute READ OFFSET ok count=${data.posts.length} min=${min} max=${max}`, 'blog');
