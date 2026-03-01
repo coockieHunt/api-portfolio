@@ -16,8 +16,24 @@ interface MailTransportConfig {
 interface LogConfig {
 	maxLine: number;
 	directory: string;
-  	name: Record<string, { file: string; api: boolean }>
+	name: Record<LogType, LogNameConfig>
 }
+
+type LogNameConfig = {
+	file: string;
+	api: boolean;
+};
+
+// dynamic type for log for repitition in code
+const LOG_NAMES = staticConfig.log.names as Record<string, LogNameConfig>;
+export type LogType = keyof typeof LOG_NAMES;
+export const LOG_TYPES = Object.freeze(
+	Object.keys(LOG_NAMES).reduce((acc, key) => {
+		const typedKey = key as LogType;
+		acc[typedKey] = typedKey;
+		return acc;
+	}, {} as Record<LogType, LogType>)
+);
 
 interface RedisConfig {
 	host: string;
@@ -81,26 +97,7 @@ const config: AppConfig = {
 	Log: {
 		maxLine: staticConfig.log.maxLine,
 		directory: process.env.LOG_DIR || "logs",
-		name: {
-	        mail:             staticConfig.log.names.mail,
-			guestbook:        staticConfig.log.names.guestbook,
-			redis:            staticConfig.log.names.redis,
-			counter:          staticConfig.log.names.counter,
-			status:           staticConfig.log.names.status,
-			rateLimiter:      staticConfig.log.names.rateLimiter,
-			blog:             staticConfig.log.names.blog,
-			health:           staticConfig.log.names.health,
-			gatus:            staticConfig.log.names.gatus,
-			ogimage:          staticConfig.log.names.ogimage,
-			tags:             staticConfig.log.names.tags,
-			assets:           staticConfig.log.names.assets,
-			projects:         staticConfig.log.names.projects,
-			logs:             staticConfig.log.names.logs,
-			system:           staticConfig.log.names.system,
-			secret:           staticConfig.log.names.secret,
-			whitelist:        staticConfig.log.names.whitelist,
-			validation_error: staticConfig.log.names.validation_error,
-		}
+		name: LOG_NAMES as Record<LogType, LogNameConfig>
 	},
 
 	redis: {

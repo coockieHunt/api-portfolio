@@ -6,13 +6,7 @@ import chalk from 'chalk';
 import consola from 'consola';
 
 // config
-import cfg from '../config/default.ts';
-
-
-interface LogConfigInterface {
-    directory: string;
-    name: Record<string, string>;
-}
+import cfg, { type LogType } from '../config/default.ts';
 
 const loggersMap = new Map<string, winston.Logger>();
 interface ChalkStyle extends Function {
@@ -37,19 +31,32 @@ const METHOD_COLORS: Record<string, ChalkStyle> = {
  * @returns A configured Winston logger instance
  * @private
  */
-const getLogger = (type: string): winston.Logger => {
+const getLogger = (type: LogType): winston.Logger => {
     if (loggersMap.has(type)) return loggersMap.get(type)!;
 
-    const LogConfig = (cfg?.Log || {}) as LogConfigInterface;
+    const LogConfig = cfg?.Log;
     const logDirectory: string = process.env.LOG_DIR || LogConfig.directory || './logs';
     const filename: string = (LogConfig.name && LogConfig.name[type])
-        ? (LogConfig.name[type] as any).file ?? `${type}.log`
+        ? LogConfig.name[type].file ?? `${type}.log`
         : `${type}.log`;
 
     try {
         const dirPath = path.resolve(logDirectory);
         if (!fs.existsSync(dirPath)) {
             fs.mkdirSync(dirPath, { recursive: true });
+        }
+
+        const baseFilePath = path.join(dirPath, filename);
+        if (fs.existsSync(baseFilePath)) {
+            const currentEntry = fs.lstatSync(baseFilePath);
+            if (!currentEntry.isSymbolicLink()) {
+                if (currentEntry.size === 0) {
+                    fs.unlinkSync(baseFilePath);
+                } else {
+                    const legacyName = `${baseFilePath}.legacy-${Date.now()}`;
+                    fs.renameSync(baseFilePath, legacyName);
+                }
+            }
         }
     } catch (e) {
         console.error("Failed to create log directory", e);
@@ -91,7 +98,7 @@ const getLogger = (type: string): winston.Logger => {
  * @param log - The message to log
  * @param type - The log category (determines which file to write to)
  */
-export const writeToLog = (log: string, type: string): void => {
+export const writeToLog = (log: string, type: LogType): void => {
     try {
         const logger = getLogger(type);
         logger.info(log);
