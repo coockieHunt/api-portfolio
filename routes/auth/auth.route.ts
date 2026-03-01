@@ -49,6 +49,7 @@ AuthRoute.get('/me',
  *  @param res Express Response object
  */
 AuthRoute.post('/logout', 
+	rateLimiter,
     authenticateToken,
     AuthValidator.logout,
     asyncHandler(AuthController.logout),

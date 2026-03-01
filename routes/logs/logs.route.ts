@@ -18,8 +18,8 @@ LogsRoute.get(
     allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
-    validateRequest,
     LogsValidator.GetFallBackList,
+    validateRequest,
     asyncHandler(new LogsController().GetFallBackList),
     responseHandler
 );
@@ -29,8 +29,8 @@ LogsRoute.get(
     allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
-    validateRequest,
     LogsValidator.GetFallBackView,
+    validateRequest,
     asyncHandler(new LogsController().GetInfoByFilename),
     responseHandler
 );
@@ -40,10 +40,21 @@ LogsRoute.post(
     allowOnlyFromIPs,
     authenticateToken,
     rateLimiter,
-    validateRequest,
     LogsValidator.PostFallBackForce,
+    validateRequest,
     asyncHandler(new LogsController().PostFallBackForce),
     responseHandler
 )
+
+LogsRoute.get(
+    '/systeme/list',
+    allowOnlyFromIPs,
+    authenticateToken,
+    rateLimiter,
+    LogsValidator.GetLogsList,
+    validateRequest,
+    asyncHandler(new LogsController().GetLogsList),
+    responseHandler
+);
 
 export default LogsRoute;

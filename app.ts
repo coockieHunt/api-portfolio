@@ -16,6 +16,8 @@ import { createClient } from 'redis';
 import { RedisService } from './services/Redis.service';
 import { SendmailService } from './services/sendmail/Sendmail.service'; 
 
+import './utils/logger'; 
+
 import { pingSqlite, initializeSQLiteSchema, closeSqlite } from './utils/sqllite.helper';
 
 import { trackApiCall } from './middlewares/callApiCount.middlewar';

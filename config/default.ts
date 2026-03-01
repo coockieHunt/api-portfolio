@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import staticConfig from '../static.config.json' with { type: 'json' };
+import rateLimiterConfig from '../config_rateLimiter.json' with { type: 'json' };
 import { parseList } from '../utils/redis.helper.ts';
 
 interface MailTransportConfig {
@@ -15,7 +16,7 @@ interface MailTransportConfig {
 interface LogConfig {
 	maxLine: number;
 	directory: string;
-	name: Record<string, string>;
+  	name: Record<string, { file: string; api: boolean }>
 }
 
 interface RedisConfig {
@@ -81,18 +82,24 @@ const config: AppConfig = {
 		maxLine: staticConfig.log.maxLine,
 		directory: process.env.LOG_DIR || "logs",
 		name: {
-			mail: staticConfig.log.names.mail,
-			secret: staticConfig.log.names.secret,
-			guestbook: staticConfig.log.names.guestbook,
-			redis: staticConfig.log.names.redis,
-			counter: staticConfig.log.names.counter,
-			status: staticConfig.log.names.status,
-			rateLimiter: staticConfig.log.names.rateLimiter,
-			blog: staticConfig.log.names.blog,
-			whitelist: staticConfig.log.names.whitelist,
+	        mail:             staticConfig.log.names.mail,
+			guestbook:        staticConfig.log.names.guestbook,
+			redis:            staticConfig.log.names.redis,
+			counter:          staticConfig.log.names.counter,
+			status:           staticConfig.log.names.status,
+			rateLimiter:      staticConfig.log.names.rateLimiter,
+			blog:             staticConfig.log.names.blog,
+			health:           staticConfig.log.names.health,
+			gatus:            staticConfig.log.names.gatus,
+			ogimage:          staticConfig.log.names.ogimage,
+			tags:             staticConfig.log.names.tags,
+			assets:           staticConfig.log.names.assets,
+			projects:         staticConfig.log.names.projects,
+			logs:             staticConfig.log.names.logs,
+			system:           staticConfig.log.names.system,
+			secret:           staticConfig.log.names.secret,
+			whitelist:        staticConfig.log.names.whitelist,
 			validation_error: staticConfig.log.names.validation_error,
-			health: staticConfig.log.names.health,
-			assets: staticConfig.log.names.assets
 		}
 	},
 
@@ -107,12 +114,12 @@ const config: AppConfig = {
 	},
 
 	rateLimiter: {
-		enabled: String(process.env.RATE_LIMITER_ENABLED || staticConfig.rateLimiter.enabled).toLowerCase() === 'true',
+		enabled: String(process.env.RATE_LIMITER_ENABLED || rateLimiterConfig.enabled).toLowerCase() === 'true',
 		default: {
-			windowSeconds: staticConfig.rateLimiter.default.windowSeconds,
-			maxRequests: staticConfig.rateLimiter.default.maxRequests
+			windowSeconds: rateLimiterConfig.default.windowSeconds,
+			maxRequests: rateLimiterConfig.default.maxRequests
 		},
-		routes: staticConfig.rateLimiter.routes
+		routes: rateLimiterConfig.routes
 	},
 
 	blog: {

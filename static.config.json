@@ -2,592 +2,83 @@
 	"log": {
 		"maxLine": 5000,
 		"names": {
-			"mail": "mail.log",
-			"secret": "secret.log",
-			"guestbook": "guestbook.log",
-			"redis": "redis.log",
-			"counter": "counter.log",
-			"status": "status.log",
-			"rateLimiter": "rate_limiter.log",
-			"blog": "blog.log",
-			"whitelist": "whitelist.log",
-			"validation_error": "validation_error.log",
-			"health": "health.log",
-			"gatus": "gatus.log",
-			"ogimage": "ogimage.log",
-			"tags": "tags.log",
-			"assets": "assets.log",
-			"projects": "projects.log",
-			"logs": "logs.log"
+			"mail": {
+				"file": "mail.log",
+				"api": true
+			},
+			"guestbook": {
+				"file": "guestbook.log",
+				"api": true
+			},
+			"redis": {
+				"file": "redis.log",
+				"api": true
+			},
+			"counter": {
+				"file": "counter.log",
+				"api": true
+			},
+			"status": {
+				"file": "status.log",
+				"api": true
+			},
+			"rateLimiter": {
+				"file": "rate_limiter.log",
+				"api": true
+			},
+			"blog": {
+				"file": "blog.log",
+				"api": true
+			},
+			"health": {
+				"file": "health.log",
+				"api": true
+			},
+			"gatus": {
+				"file": "gatus.log",
+				"api": true
+			},
+			"ogimage": {
+				"file": "ogimage.log",
+				"api": true
+			},
+			"tags": {
+				"file": "tags.log",
+				"api": true
+			},
+			"assets": {
+				"file": "assets.log",
+				"api": true
+			},
+			"projects": {
+				"file": "projects.log",
+				"api": true
+			},
+			"logs": {
+				"file": "logs.log",
+				"api": true
+			},
+			"system": {
+				"file": "system.log",
+				"api": true
+			},
+			"secret": {
+				"file": "secret.log",
+				"api": false
+			},
+			"whitelist": {
+				"file": "whitelist.log",
+				"api": false
+			},
+			"validation_error": {
+				"file": "validation_error.log",
+				"api": false
+			}
 		}
 	},
-
 	"secretSystem": {
 		"password": "AZERTY123"
 	},
-
-	"rateLimiter": {
-		"enabled": true,
-
-		"default": {
-			"windowSeconds": 60,
-			"maxRequests": 20,
-			"adminBypass": false,
-			"stopInRedisDown": false
-		},
-
-		"routes": {
-			"mail.sendEmail": {
-				"windowSeconds": 60,
-				"maxRequests": 5,
-				"adminBypass": false,
-				"match": {
-					"url": "/api/mail/sendEmail",
-					"method": "POST"
-				}
-			},
-
-			"counter.get": {
-				"windowSeconds": 60,
-				"maxRequests": 40,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/counter/:name",
-					"method": "GET"
-				}
-			},
-			"counter.incr": {
-				"windowSeconds": 60,
-				"maxRequests": 40,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/counter/:name/increment",
-					"method": "POST"
-				}
-			},
-			"counter.decr": {
-				"windowSeconds": 60,
-				"maxRequests": 40,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/counter/:name/decrement",
-					"method": "POST"
-				}
-			},
-			"counter.reset": {
-				"windowSeconds": 60,
-				"maxRequests": 7,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/counter/:name",
-					"method": "DELETE"
-				}
-			},
-
-			"guestbook.read": {
-				"windowSeconds": 60,
-				"maxRequests": 7,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/guestbook/",
-					"method": "GET"
-				}
-			},
-			"guestbook.write": {
-				"windowSeconds": 60,
-				"maxRequests": 6,
-				"adminBypass": false,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/guestbook/",
-					"method": "POST"
-				}
-			},
-			"authors.getAll": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/authors/",
-					"method": "GET"
-				}
-			},
-			"authors.getById": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/authors/:id",
-					"method": "GET"
-				}
-			},
-			"authors.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/authors/:id",
-					"method": "DELETE"
-				}
-			},
-			"logs.get": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/logs/",
-					"method": "GET"
-				}
-			},
-			"logs.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/logs/:id",
-					"method": "DELETE"
-				}
-			},
-			"assets.upload": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/upload/",
-					"method": "POST"
-				}
-			},
-			"assets.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 30,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/delete/:folder/:id",
-					"method": "DELETE"
-				}
-			},
-			"assets.cache.clear": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/cache/clear/:id",
-					"method": "DELETE"
-				}
-			},
-			"assets.cache.all": {
-				"windowSeconds": 60,
-				"maxRequests": 5,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/cache/all",
-					"method": "DELETE"
-				}
-			},
-			"assets.list": {
-				"windowSeconds": 60,
-				"maxRequests": 50,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/assets/list",
-					"method": "GET"
-				}
-			},
-			"guestbook.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 10,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/guestbook/:id",
-					"method": "DELETE"
-				}
-			},
-
-			"auth.login": {
-				"windowSeconds": 60,
-				"maxRequests": 5,
-				"adminBypass": false,
-				"match": {
-					"url": "/api/auth/login",
-					"method": "POST"
-				}
-			},
-			"auth.logout": {
-				"windowSeconds": 60,
-				"maxRequests": 10,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/auth/logout",
-					"method": "POST"
-				}
-			},
-
-			"blog.readALL": {
-				"windowSeconds": 60,
-				"maxRequests": 150,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/blog/all",
-					"method": "GET"
-				}
-			},
-			"blog.readOffset": {
-				"windowSeconds": 60,
-				"maxRequests": 150,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/blog/offset",
-					"method": "GET"
-				}
-			},
-			"blog.readSlug": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/blog/:slug",
-					"method": "GET"
-				}
-			},
-			"blog.create": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/new",
-					"method": "POST"
-				}
-			},
-			"blog.update": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/edit/update/:slug",
-					"method": "PUT"
-				}
-			},
-			"blog.publish": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/edit/publish/:slug",
-					"method": "PUT"
-				}
-			},
-			"blog.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/:slug",
-					"method": "DELETE"
-				}
-			},
-			"blog.cache.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/cache/delete/:slug",
-					"method": "DELETE"
-				}
-			},
-			"blog.cache.clear": {
-				"windowSeconds": 60,
-				"maxRequests": 5,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/cache/clear",
-					"method": "DELETE"
-				}
-			},
-
-			"projects.readAll": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/projects/",
-					"method": "GET"
-				}
-			},
-			"projects.readOffset": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/projects/offset",
-					"method": "GET"
-				}
-			},
-			"projects.readOne": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/projects/:id",
-					"method": "GET"
-				}
-			},
-			"projects.create": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/projects/",
-					"method": "POST"
-				}
-			},
-			"projects.update": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/projects/:id",
-					"method": "PUT"
-				}
-			},
-			"projects.publish": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/projects/edit/publish/:id",
-					"method": "PUT"
-				}
-			},
-			"projects.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/projects/:id",
-					"method": "DELETE"
-				}
-			},
-
-			"health.read": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/health",
-					"method": "GET"
-				}
-			},
-
-			"gatus.endpoints": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/gatus/endpoints",
-					"method": "GET"
-				}
-			},
-
-			"assets.og": {
-				"windowSeconds": 60,
-				"maxRequests": 50,
-				"adminBypass": false,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/assets/opengraph/get",
-					"method": "GET"
-				}
-			},
-			"assets.proxy": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/assets/proxy/:public_id",
-					"method": "GET"
-				}
-			},
-			"assets.proxy.folder": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/assets/proxy/:folder/:id",
-					"method": "GET"
-				}
-			},
-			"assets.proxy.resize": {
-				"windowSeconds": 60,
-				"maxRequests": 50,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/assets/proxy/:public_id/size/:w/:h",
-					"method": "GET"
-				}
-			},
-
-
-			"tags.getAll": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/tags/",
-					"method": "GET"
-				}
-			},
-			"tags.getBySlug": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/tags/:slug",
-					"method": "GET"
-				}
-			},
-			"tags.create": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/tags/",
-					"method": "POST"
-				}
-			},
-			"tags.delete": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/tags/:slug",
-					"method": "DELETE"
-				}
-			},
-			"sitemap.get": {
-				"windowSeconds": 60,
-				"maxRequests": 200,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/sitemap.xml",
-					"method": "GET"
-				}
-			},
-			"robots.get": {
-				"windowSeconds": 60,
-				"maxRequests": 200,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/robots.txt",
-					"method": "GET"
-				}
-			},
-			"ai.policy": {
-				"windowSeconds": 60,
-				"maxRequests": 200,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/ai.txt",
-					"method": "GET"
-				}
-			},
-
-			"guestbook.authorize": {
-				"windowSeconds": 60,
-				"maxRequests": 10,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/guestbook/authorize/:id",
-					"method": "PUT"
-				}
-			},
-			"guestbook.unauthorize": {
-				"windowSeconds": 60,
-				"maxRequests": 10,
-				"adminBypass": true,
-				"stopInRedisDown": true,
-				"match": {
-					"url": "/api/guestbook/unauthorize/:id",
-					"method": "PUT"
-				}
-			},
-
-			"blog.indexed": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/edit/indexed/:slug",
-					"method": "PUT"
-				}
-			},
-			"blog.version.get": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/api/blog/version/:slug",
-					"method": "GET"
-				}
-			},
-			"blog.version.update": {
-				"windowSeconds": 60,
-				"maxRequests": 20,
-				"adminBypass": true,
-				"match": {
-					"url": "/api/blog/version/:slug/update",
-					"method": "PUT"
-				}
-			},
-
-			"assets.proxy.image": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/assets/images/proxy/:public_id",
-					"method": "GET"
-				}
-			},
-			"assets.proxy.folder.image": {
-				"windowSeconds": 60,
-				"maxRequests": 100,
-				"adminBypass": true,
-				"stopInRedisDown": false,
-				"match": {
-					"url": "/assets/images/proxy/:folder/:id",
-					"method": "GET"
-				}
-			}
-		}
-	}
-	,
 	"blog": {
 		"cache_ttl": 86400,
 		"cache_client_age": 300,

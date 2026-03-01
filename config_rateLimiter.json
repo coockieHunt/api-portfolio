@@ -1,0 +1,591 @@
+{
+	"enabled": true,
+	"default": {
+		"windowSeconds": 60,
+		"maxRequests": 20,
+		"adminBypass": false,
+		"stopInRedisDown": false
+	},
+	"routes": {
+		"mail.sendEmail": {
+			"windowSeconds": 60,
+			"maxRequests": 5,
+			"adminBypass": false,
+			"match": {
+				"url": "/api/mail/sendEmail",
+				"method": "POST"
+			}
+		},
+		"counter.get": {
+			"windowSeconds": 60,
+			"maxRequests": 40,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/counter/:name",
+				"method": "GET"
+			}
+		},
+		"counter.incr": {
+			"windowSeconds": 60,
+			"maxRequests": 40,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/counter/:name/increment",
+				"method": "POST"
+			}
+		},
+		"counter.decr": {
+			"windowSeconds": 60,
+			"maxRequests": 40,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/counter/:name/decrement",
+				"method": "POST"
+			}
+		},
+		"counter.reset": {
+			"windowSeconds": 60,
+			"maxRequests": 7,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/counter/:name",
+				"method": "DELETE"
+			}
+		},
+		"guestbook.read": {
+			"windowSeconds": 60,
+			"maxRequests": 7,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/guestbook/",
+				"method": "GET"
+			}
+		},
+		"guestbook.write": {
+			"windowSeconds": 60,
+			"maxRequests": 6,
+			"adminBypass": false,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/guestbook/",
+				"method": "POST"
+			}
+		},
+		"authors.getAll": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/authors/",
+				"method": "GET"
+			}
+		},
+		"authors.getById": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/authors/:id",
+				"method": "GET"
+			}
+		},
+		"authors.create": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/authors/",
+				"method": "POST"
+			}
+		},
+		"authors.update": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/authors/:id",
+				"method": "PUT"
+			}
+		},
+		"authors.delete": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/authors/:id",
+				"method": "DELETE"
+			}
+		},
+		"logs.fallback.list": {
+			"windowSeconds": 60,
+			"maxRequests": 60,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/logs/fallback/list",
+				"method": "GET"
+			}
+		},
+		"logs.fallback.view": {
+			"windowSeconds": 60,
+			"maxRequests": 60,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/logs/fallback/view",
+				"method": "GET"
+			}
+		},
+		"logs.fallback.force": {
+			"windowSeconds": 60,
+			"maxRequests": 10,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/logs/fallback/force",
+				"method": "POST"
+			}
+		},
+		"logs.system.list": {
+			"windowSeconds": 60,
+			"maxRequests": 60,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/logs/systeme/list",
+				"method": "GET"
+			}
+		},
+		"assets.upload": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/assets/upload/",
+				"method": "POST"
+			}
+		},
+		"assets.delete": {
+			"windowSeconds": 60,
+			"maxRequests": 30,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/assets/delete/:folder/:id",
+				"method": "DELETE"
+			}
+		},
+		"assets.cache.clear": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/assets/cache/clear/:id",
+				"method": "DELETE"
+			}
+		},
+		"assets.cache.all": {
+			"windowSeconds": 60,
+			"maxRequests": 5,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/assets/cache/all",
+				"method": "DELETE"
+			}
+		},
+		"assets.list": {
+			"windowSeconds": 60,
+			"maxRequests": 50,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/assets/list",
+				"method": "GET"
+			}
+		},
+		"guestbook.delete": {
+			"windowSeconds": 60,
+			"maxRequests": 10,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/guestbook/:id",
+				"method": "DELETE"
+			}
+		},
+		"auth.login": {
+			"windowSeconds": 60,
+			"maxRequests": 5,
+			"adminBypass": false,
+			"match": {
+				"url": "/api/auth/login",
+				"method": "POST"
+			}
+		},
+		"auth.logout": {
+			"windowSeconds": 60,
+			"maxRequests": 10,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/auth/logout",
+				"method": "POST"
+			}
+		},
+		"blog.readALL": {
+			"windowSeconds": 60,
+			"maxRequests": 150,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/blog/all",
+				"method": "GET"
+			}
+		},
+		"blog.readOffset": {
+			"windowSeconds": 60,
+			"maxRequests": 150,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/blog/offset",
+				"method": "GET"
+			}
+		},
+		"blog.readTags": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/blog/tags",
+				"method": "GET"
+			}
+		},
+		"blog.readSlug": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/blog/:slug",
+				"method": "GET"
+			}
+		},
+		"blog.create": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/new",
+				"method": "POST"
+			}
+		},
+		"blog.update": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/edit/update/:slug",
+				"method": "PUT"
+			}
+		},
+		"blog.publish": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/edit/publish/:slug",
+				"method": "PUT"
+			}
+		},
+		"blog.delete": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/:slug",
+				"method": "DELETE"
+			}
+		},
+		"blog.cache.delete": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/cache/delete/:slug",
+				"method": "DELETE"
+			}
+		},
+		"blog.cache.clear": {
+			"windowSeconds": 60,
+			"maxRequests": 5,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/cache/clear",
+				"method": "DELETE"
+			}
+		},
+		"projects.readAll": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/projects/",
+				"method": "GET"
+			}
+		},
+		"projects.readOffset": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/projects/offset",
+				"method": "GET"
+			}
+		},
+		"projects.readOne": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/projects/:id",
+				"method": "GET"
+			}
+		},
+		"projects.create": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/projects/",
+				"method": "POST"
+			}
+		},
+		"projects.update": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/projects/:id",
+				"method": "PUT"
+			}
+		},
+		"projects.publish": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/projects/edit/publish/:id",
+				"method": "PUT"
+			}
+		},
+		"projects.delete": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/projects/:id",
+				"method": "DELETE"
+			}
+		},
+		"health.read": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/health",
+				"method": "GET"
+			}
+		},
+		"gatus.endpoints": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/gatus/endpoints",
+				"method": "GET"
+			}
+		},
+		"assets.og": {
+			"windowSeconds": 60,
+			"maxRequests": 50,
+			"adminBypass": false,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/assets/opengraph/get",
+				"method": "GET"
+			}
+		},
+		"tags.getAll": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/tags/",
+				"method": "GET"
+			}
+		},
+		"tags.getBySlug": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/tags/:slug",
+				"method": "GET"
+			}
+		},
+		"tags.create": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/tags/",
+				"method": "POST"
+			}
+		},
+		"tags.update": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/tags/:slug",
+				"method": "PUT"
+			}
+		},
+		"tags.delete": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/tags/:slug",
+				"method": "DELETE"
+			}
+		},
+		"sitemap.get": {
+			"windowSeconds": 60,
+			"maxRequests": 200,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/sitemap.xml",
+				"method": "GET"
+			}
+		},
+		"robots.get": {
+			"windowSeconds": 60,
+			"maxRequests": 200,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/robots.txt",
+				"method": "GET"
+			}
+		},
+		"ai.policy": {
+			"windowSeconds": 60,
+			"maxRequests": 200,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/ai.txt",
+				"method": "GET"
+			}
+		},
+		"manifest.get": {
+			"windowSeconds": 60,
+			"maxRequests": 200,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/manifest.json",
+				"method": "GET"
+			}
+		},
+		"guestbook.authorize": {
+			"windowSeconds": 60,
+			"maxRequests": 10,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/guestbook/authorize/:id",
+				"method": "PUT"
+			}
+		},
+		"guestbook.unauthorize": {
+			"windowSeconds": 60,
+			"maxRequests": 10,
+			"adminBypass": true,
+			"stopInRedisDown": true,
+			"match": {
+				"url": "/api/guestbook/unauthorize/:id",
+				"method": "PUT"
+			}
+		},
+		"blog.indexed": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/edit/indexed/:slug",
+				"method": "PUT"
+			}
+		},
+		"blog.version.get": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/api/blog/version/:slug",
+				"method": "GET"
+			}
+		},
+		"blog.version.update": {
+			"windowSeconds": 60,
+			"maxRequests": 20,
+			"adminBypass": true,
+			"match": {
+				"url": "/api/blog/version/:slug/update",
+				"method": "PUT"
+			}
+		},
+		"assets.proxy.image": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/assets/images/proxy/:public_id",
+				"method": "GET"
+			}
+		},
+		"assets.proxy.folder.image": {
+			"windowSeconds": 60,
+			"maxRequests": 100,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/assets/images/proxy/:folder/:id",
+				"method": "GET"
+			}
+		},
+		"assets.proxy.resize.image": {
+			"windowSeconds": 60,
+			"maxRequests": 50,
+			"adminBypass": true,
+			"stopInRedisDown": false,
+			"match": {
+				"url": "/assets/images/proxy/:public_id/size/:w/:h",
+				"method": "GET"
+			}
+		}
+	}
+}

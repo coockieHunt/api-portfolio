@@ -42,7 +42,9 @@ const getLogger = (type: string): winston.Logger => {
 
     const LogConfig = (cfg?.Log || {}) as LogConfigInterface;
     const logDirectory: string = process.env.LOG_DIR || LogConfig.directory || './logs';
-    const filename: string = (LogConfig.name && LogConfig.name[type]) || `${type}.log`;
+    const filename: string = (LogConfig.name && LogConfig.name[type])
+        ? (LogConfig.name[type] as any).file ?? `${type}.log`
+        : `${type}.log`;
 
     try {
         const dirPath = path.resolve(logDirectory);
@@ -56,13 +58,13 @@ const getLogger = (type: string): winston.Logger => {
     const transport = new DailyRotateFile({
         dirname: logDirectory,
         filename: filename + '-%DATE%',
-        datePattern: 'YYYY-WW', 
-        zippedArchive: true, 
-        frequency: process.env.LOG_ROTATION_FREQUENCY || '7d', 
+        datePattern: 'YYYY-WW',
+        zippedArchive: true,
+        frequency: process.env.LOG_ROTATION_FREQUENCY || '7d',
         maxSize: '20m',
-        maxFiles: process.env.LOG_MAX_FILES || '4w', 
-        createSymlink: true, 
-        symlinkName: filename 
+        maxFiles: process.env.LOG_MAX_FILES || '4w',
+        createSymlink: true,
+        symlinkName: filename
     });
 
     const logger = winston.createLogger({

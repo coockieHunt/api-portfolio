@@ -1,7 +1,8 @@
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import type { Request, Response } from 'express';
 import { bree } from '../../app';
 import { logConsole, writeToLog } from '../../middlewares/log.middlewar';
+import cfg from '../../config/default.ts';
 
 class LogsController {
     async GetFallBackList(req: Request, res: Response) {
@@ -60,6 +61,36 @@ class LogsController {
             logConsole('POST', '/logs/fallback/force', 'FAIL', 'Error during fallback cache build', { error });
             return res.error("error during fallback cache build", 500);
         }
+    }
+
+    async GetLogsList(req: Request, res: Response) {
+        const file  = (req.query.file as string) || 'system'
+        const limit = parseInt(req.query.limit as string) || 200
+
+        const logConfig = cfg.Log.name[file] 
+
+        if (file.includes('/') || file.includes('..')) {
+            logConsole('GET', '/logs/list', 'FAIL', 'Invalid file name in request', { file });
+            writeToLog(`[Logs] Invalid file name in request: ${file}`, "logs");
+            return res.error('Invalid file name', 400)
+        }
+
+        if (!logConfig || !logConfig.api) {
+            logConsole('GET', '/logs/list', 'FAIL', `Log file "${file}" not found or not accessible`, { file });
+            writeToLog(`[Logs] Log file "${file}" not found or not accessible`, "logs");
+            return res.error(`Log file "${file}" not found or not accessible`, 404)
+        }
+
+        const LOG_FILE = `${process.cwd()}/logs/${logConfig.file}`
+
+        const logs = readFileSync(LOG_FILE, 'utf8')
+            .split('\n')
+            .filter(Boolean)
+            .map(l => JSON.parse(l))
+            .reverse()
+            .slice(0, limit)
+
+        return res.success({ logs, file, total: logs.length })
     }
 }
 
