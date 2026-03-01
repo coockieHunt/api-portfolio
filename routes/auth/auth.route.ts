@@ -37,6 +37,7 @@ AuthRoute.post('/login',
  *  @param res Express Response object
  */
 AuthRoute.get('/me',
+    rateLimiter,
     authenticateToken,
     asyncHandler(AuthController.me),
     responseHandler

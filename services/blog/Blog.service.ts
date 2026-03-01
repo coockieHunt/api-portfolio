@@ -30,12 +30,10 @@ import {BlogHelper} from './Blog.helper.ts';
 export class BlogService {
     static async getTagsWithCount({ tagsContains = [], titleContains = '', isAuthenticated = false }: { tagsContains?: string[], titleContains?: string, isAuthenticated?: boolean }) {
         const filters = [];
-        if (!isAuthenticated) {
-            filters.push(eq(posts.indexed, 1), eq(posts.published, 1));
-        }
-        if (titleContains) {
-            filters.push(like(posts.title, `%${titleContains}%`));
-        }
+
+        //filter published and indexed posts for non-authenticated users
+        if (!isAuthenticated) {filters.push(eq(posts.indexed, 1), eq(posts.published, 1));}
+        if (titleContains) {filters.push(like(posts.title, `%${titleContains}%`));}
         if (tagsContains.length > 0) {
             const postsWithTagsSubquery = db
                 .select({ postId: postTags.postId })
@@ -54,6 +52,7 @@ export class BlogService {
         const allTags = await db.select().from(tags).all();
 
         let tagsCount: Array<{ tag: typeof tags.$inferSelect, count: number }> = [];
+
         if (postIds.length > 0) {
             const counted = await db
                 .select({
@@ -74,6 +73,7 @@ export class BlogService {
         }
         return { tags: tagsCount };
     }
+    
     /**
      * Retrieves all blog posts with pagination
      * @param page - Page number (default: 1)

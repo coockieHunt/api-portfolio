@@ -1,23 +1,64 @@
 import { RedisService, RedisClient } from '../../services/Redis.service.ts'; 
 import type {Request, Response} from 'express';
 import { writeToLog, logConsole } from '../../middlewares/log.middlewar.ts';
-import { AUTHORIZED_REDIS_KEYS } from '../../constants/redis.constant.ts';
+import { AUTHORIZED_REDIS_KEYS, AUTHORIZED_REDIS_PREFIXES } from '../../constants/redis.constant.ts';
 
 class CounterController {
-    private getValidatedRedisKey(name: string): string | null {
+    private normalizeAuthorizedRedisValue = (value: string): string | null => {
+        const normalizedValue = value.trim();
+        const authorizedKeys = Object.values(AUTHORIZED_REDIS_KEYS);
+        if (authorizedKeys.includes(normalizedValue as (typeof authorizedKeys)[number])) {
+            return normalizedValue;
+        }
+
+        const authorizedPrefixes = Object.values(AUTHORIZED_REDIS_PREFIXES);
+        const matchedFullPrefix = authorizedPrefixes.find((prefix) => normalizedValue.startsWith(prefix));
+        if (matchedFullPrefix) {
+            return normalizedValue;
+        }
+
+        for (const fullPrefix of authorizedPrefixes) {
+            const shortPrefix = fullPrefix.startsWith('portfolio:')
+                ? fullPrefix.slice('portfolio:'.length)
+                : fullPrefix;
+
+            if (normalizedValue.startsWith(shortPrefix)) {
+                const suffix = normalizedValue.slice(shortPrefix.length);
+                return `${fullPrefix}${suffix}`;
+            }
+        }
+
+        return null;
+    }
+
+    private getValidatedRedisKey = (name: string): string | null => {
         if (!name || typeof name !== 'string' || name.trim() === '') { 
             return null;    
         }
-        
-        const upperName = name.toUpperCase() as keyof typeof AUTHORIZED_REDIS_KEYS;
-        const key = AUTHORIZED_REDIS_KEYS[upperName];
-        
-        return key || null; 
+
+        const normalizedName = name.trim();
+        const upperName = normalizedName.toUpperCase();
+
+        const fixedKey = AUTHORIZED_REDIS_KEYS[upperName as keyof typeof AUTHORIZED_REDIS_KEYS];
+        if (fixedKey) {
+            return fixedKey;
+        }
+
+        const authorizedPrefix = AUTHORIZED_REDIS_PREFIXES[upperName as keyof typeof AUTHORIZED_REDIS_PREFIXES];
+        if (authorizedPrefix) {
+            return authorizedPrefix;
+        }
+
+        const normalizedRedisValue = this.normalizeAuthorizedRedisValue(normalizedName);
+        if (normalizedRedisValue) {
+            return normalizedRedisValue;
+        }
+
+        return null; 
     }
 
-    public validateRedisKey(value: string): boolean{
-        const upperName = value.toUpperCase() as keyof typeof AUTHORIZED_REDIS_KEYS;
-        if (!AUTHORIZED_REDIS_KEYS[upperName]) {
+    public validateRedisKey = (value: string): boolean => {
+        if (!this.getValidatedRedisKey(value)) {
             throw new Error('Invalid counter name');
         }
         return true;
